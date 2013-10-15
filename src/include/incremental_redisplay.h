@@ -8,6 +8,11 @@
 
 class Window
 {
+	private:
+	public:
+	Window(); //default Constructor
+	void NcursesTest(); //Test ncurses
+	~Window(); //Destructor
 };
 
 #endif

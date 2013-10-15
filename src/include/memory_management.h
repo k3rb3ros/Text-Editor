@@ -12,15 +12,16 @@ class Buffer
 	char* point;
 	char buffer[BUFFSIZE];
 
+	public:
+	Buffer(); //constructor
 	bool SearchF(char* txt);
 	char* GetPoint();
 	//void CreateBuffer(); //implicit in constructor
-	void Delete(uint32_t count);
+	void Delete(int32_t count);
 	void Insert(char* txt);
 	void SetPointA(uint32_t location);
 	void SetPointR(uint32_t count);
-	
-	public:
+	~Buffer();
 };
 
 #endif

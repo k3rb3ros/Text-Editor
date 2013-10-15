@@ -2,19 +2,24 @@
 # Makefile for text editor written for CSCI480@CMU #
 ####################################################
 CC=g++
+DEPS=include/*.h
 CFLAGS=-std=c++11 -O0 -g -Wall -Wextra
-LDFLAGS=
-SOURCES=main.cpp
-OBJECTS_DIR=objects/
-OBJECTS=$(SOURCES:.cpp=.o)
+IFLAGS=-I /usr/include/ncursesw
+LPATHS=-L/usr/lib/x86_64-linux-gnu
+LFLAGS=-lncursesw
+SRCES=$(wildcard *.cpp)
+OBJDIR=objects
+OBJS=$(SRCES:.cpp=.o)
 BINARY=kedit
 
-all: $(BINARY) $(OJECTS_DIR)$(OBJECTS)
-.cpp.o:
-	$(CC) $(CFLAGS) -c $< -o $(OBJECTS_DIR)$@
+all: $(BINARY) $(OBJS)
+.cpp.o: %.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $(OBJDIR)/$@
+	
+$(BINARY): $(OBJS)
+	$(CC) $(CFLAGS) $(IFLAGS) $(LPATHS) $(addprefix $(OBJDIR)/,$(OBJS)) -o $@ $(LFLAGS)
 
-$(BINARY): $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS_DIR)$(OBJECTS) -o $@
+.PHONY: clean
 
 clean: 
-	rm -fv $(BINARY) $(OBJECTS_DIR)$(OBJECTS)
+	rm -fv $(BINARY) objects/*.o
