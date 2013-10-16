@@ -12,7 +12,7 @@ OBJDIR=objects
 OBJS=$(SRCES:.cpp=.o)
 BINARY=kedit
 
-all: $(BINARY) $(OBJS)
+all: $(BINARY)
 .cpp.o: %.cpp $(DEPS)
 	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $(OBJDIR)/$@
 	

@@ -1,4 +1,4 @@
-#include "include/incremental_redisplay.h"
+#include "include/display.h"
 
 Window::Window()
 {
@@ -7,7 +7,7 @@ Window::Window()
 void Window::NcursesTest()
 {
 	initscr();
-	printw("Hello World !!");
+	printw("Ncurses is working");
 	refresh();
 	getch();
 	endwin();

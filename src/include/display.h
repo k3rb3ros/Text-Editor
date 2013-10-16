@@ -1,5 +1,5 @@
-#ifndef INCREMENTAL_REDISPLAY_H
-#define INCREMENTAL_REDISPLAY_H
+#ifndef DISPLAY_H
+#define DISPLAY_H
 
 #include "includes.h"
 

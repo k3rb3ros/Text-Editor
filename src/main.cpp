@@ -4,12 +4,12 @@
 */
 
 #include "include/includes.h"
-#include "include/incremental_redisplay.h"
-#include "include/memory_management.h"
+#include "include/display.h"
+#include "include/world.h"
 
-int main(int arc, char** argv)
+int main(void)
 {
-	Buffer main_buff;
+	World TheWorld;
 	Window main;
 	main.NcursesTest();
 	return 0;
