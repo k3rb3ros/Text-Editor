@@ -4,6 +4,8 @@ Window::Window()
 {
 }
 
+
+
 void Window::NcursesTest()
 {
 	initscr();

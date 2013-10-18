@@ -10,9 +10,19 @@ Buffer::Buffer()
 	text_length = 0;
 }
 
-bool SearchF(uint8_t* txt)
+bool Buffer::GetModified()
+{
+	return modified;
+}
+
+bool Buffer::SearchF(uint8_t* txt)
 {
 	return false;
+}
+
+uint8_t* Buffer::GetGap()
+{
+	return gap;
 }
 
 uint8_t* Buffer::GetPoint() //Returns the location of hte point
@@ -20,7 +30,7 @@ uint8_t* Buffer::GetPoint() //Returns the location of hte point
 	return point;
 }
 
-void Buffer::Delete(int32_t count) //Deletes count uint8_tacters to the right of the point if count is positive; to the left of the point if count is negative
+void Buffer::Delete(int32_t count) //Deletes count uint8_t characters to the right of the point if count is positive; to the left of the point if count is negative
 {
 	if((point + count) < buffer || (point + count) > (buffer + BUFFSIZE)) cerr << "Invalid range to delete\n"; 
 	else
@@ -28,11 +38,19 @@ void Buffer::Delete(int32_t count) //Deletes count uint8_tacters to the right of
 		if(count < 0)
 		{
 			count *= -1; //invert count
-			for(int32_t i=0; i<count; i++) *(point--) = 0; //delete the uint8_tacters left of the point and move the point to the left
+			for(int32_t i=0; i<count; i++) 
+			{
+				*(point--) = 0; //delete the uint8_tacters left of the point and move the point to the left
+				text_length --;
+			}
 		}
 		else if(count > 0)
 		{
-			for(int32_t i=0; i<count; i++) *(point++) = 0; //delete the uint8_tacters right of the point
+			for(int32_t i=0; i<count; i++)
+			{
+				*(point++) = 0; //delete the uint8_tacters right of the point
+				text_length --;
+			}
 		}
 	}	
 }
@@ -40,7 +58,27 @@ void Buffer::Delete(int32_t count) //Deletes count uint8_tacters to the right of
 void Buffer::Insert(uint8_t* txt) //insert a string at point, point ends up just after inserted text
 {
 	uint32_t len = strlen((const char*)txt); //get the length of the string
-	for(uint32_t i; i<len; i++) *(point++) = txt[i]; //insert the text at the point and advance it
+	if(len == 0) cerr << "Text to insert is empty" << endl;
+	for(uint32_t i=0; i<len; i++)
+	{
+		*(point++) = txt[i]; //insert the text at the point and advance it
+		text_length ++;
+	}
+}
+
+uint32_t Buffer::GetGapLength()
+{
+	return gap_length;
+}
+
+uint32_t Buffer::GetTextLength()
+{
+	return text_length;
+}
+
+void Buffer::SetModified(bool status)
+{
+ 	modified = status;
 }
 
 void Buffer::SetPointA(uint32_t location) //set the point to location
@@ -54,7 +92,7 @@ void Buffer::SetPointA(uint32_t location) //set the point to location
 
 void Buffer::SetPointR(uint32_t count) //Moves the point count uint8_tacters relative to the current location
 {
-	if((point + count) > buffer && (point + count) >= (buffer + BUFFSIZE))
+	if((point + count) > buffer && (point + count) < (buffer + BUFFSIZE))
 	{
 		point = (point+count); //set the point
 	}
