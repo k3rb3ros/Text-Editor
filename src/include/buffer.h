@@ -11,7 +11,8 @@ class Buffer
 
 	bool modified;
 	uint8_t buffer[BUFFSIZE];
-	uint8_t* gap;	
+	uint8_t* gap_end;
+	uint8_t* gap_start;	
 	uint8_t* point;
 	uint32_t gap_length;
 	uint32_t text_length;
@@ -22,6 +23,7 @@ class Buffer
 	bool SearchF(uint8_t* txt);
 	uint8_t* GetGap();
 	uint8_t* GetPoint();
+	uint8_t GetCh(uint16_t character);
 	//void CreateBuffer(); //implicit in constructor
 	void Delete(int32_t count);
 	void Insert(uint8_t* txt);

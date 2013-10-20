@@ -3,10 +3,11 @@
 Buffer::Buffer()
 {
 	modified = false; //set modified to false
-	gap = &buffer[0]; //set gap to point to the first index
 	point = &buffer[0]; //set the point to point to the first index
+	gap_end = &buffer[BUFFSIZE-1]; //set gap to point to the first index
+	gap_start = &buffer[0]; //set gap start to the point
 	for(uint32_t i=0; i<BUFFSIZE; i++) buffer[i] = 0; //zero fill the buffer
-	gap_length = 0;
+	gap_length = gap_end - gap_start;
 	text_length = 0;
 }
 
@@ -22,12 +23,23 @@ bool Buffer::SearchF(uint8_t* txt)
 
 uint8_t* Buffer::GetGap()
 {
-	return gap;
+	return gap_end;
 }
 
 uint8_t* Buffer::GetPoint() //Returns the location of hte point
 {
 	return point;
+}
+
+uint8_t Buffer::GetCh(uint16_t character)
+{
+	if(character > text_length || character >= BUFFSIZE)
+	{
+		cerr << "Range not in buffer\n";
+		return 0;
+	}
+	if(character >= (gap_end - gap_start)) return buffer[(gap_end - gap_start) + character];
+	else return buffer[character];
 }
 
 void Buffer::Delete(int32_t count) //Deletes count uint8_t characters to the right of the point if count is positive; to the left of the point if count is negative
@@ -59,10 +71,30 @@ void Buffer::Insert(uint8_t* txt) //insert a string at point, point ends up just
 {
 	uint32_t len = strlen((const char*)txt); //get the length of the string
 	if(len == 0) cerr << "Text to insert is empty" << endl;
-	for(uint32_t i=0; i<len; i++)
+	if(gap_start == point) 
 	{
-		*(point++) = txt[i]; //insert the text at the point and advance it
-		text_length ++;
+		for(uint32_t i=0; i<len; i++)
+		{
+			*(point++) = txt[i]; //insert the text at the point and advance it
+			text_length ++;
+		}
+
+	}
+	else if(gap_start < point)//move the characters between the point and the gap start to the gap
+	{
+		while(gap_start < point)
+		{
+			point = gap_start;
+			//copy the characters between gap start and point to 
+			for(uint32_t i=0; i<len; i++)
+			{
+				*(point++) = txt[i]; //insert the text at the point and advance it
+				text_length ++;
+			}
+		}
+	}
+	else //gap_start > point
+	{
 	}
 }
 

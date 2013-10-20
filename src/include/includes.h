@@ -4,6 +4,7 @@
 #include <iostream>
 #include <ncurses.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 #include <vector>
 

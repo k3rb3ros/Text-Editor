@@ -13,7 +13,9 @@ int main(void)
 	Test tests;
 	tests.TestBuffer();
 	World TheWorld;
-	Window main;
-	main.NcursesTest();
+	TheWorld.InitWindow();
+	TheWorld.DrawScreen(TheWorld.world, 1);
+	TheWorld.FreeWindow();
+	
 	return 0;
 }

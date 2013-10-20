@@ -10,10 +10,13 @@
 class Window
 {
 	private:
+	char* GetStatus();
 	public:
 	Window(); //default Constructor
-	void NcursesTest(); //Test ncurses
 	void DrawScreen(vector<Buffer> world, uint8_t current_buffer);
+	void FreeWindow();
+	void InitWindow();
+	void NcursesTest(); //Test ncurses
 	~Window(); //Destructor
 };
 
