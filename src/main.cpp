@@ -11,11 +11,11 @@
 int main(void)
 {
 	Test tests;
-	tests.TestBuffer();
+	tests.TestBuffer(); //test the basic buffer functions
+	tests.TestDisplay(); //test the display (Visual Tests)
 	World TheWorld;
-	TheWorld.InitWindow();
-	TheWorld.DrawScreen(TheWorld.world, 1);
-	TheWorld.FreeWindow();
-	
+	//TheWorld.InitWindow();
+	//TheWorld.DrawScreen(TheWorld.world, 1);
+	//TheWorld.FreeWindow();
 	return 0;
 }

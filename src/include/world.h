@@ -8,15 +8,19 @@
 class World : public Window
 {
         private:
-
-	protected:
 	bool running;
 	uint8_t current_buffer;
         uint8_t* file_name;
 
+	protected:
+	//bool running;
+	//uint8_t current_buffer;
+        //uint8_t* file_name;
+
         public:
         World();
 	World(uint8_t* FileName);
+	uint8_t GetCurBuf();
 	void AddBuffer();
 	void DeleteBuffer(uint8_t buffer);
         void LoadWorld(uint8_t* FileName);

@@ -4,7 +4,6 @@ void Test::TestBuffer()
 {
 	uint8_t text[] = "Hurpadurp\0";
 	assert(test_buffer.GetModified() == false); //test modified is inited to false
-	assert(test_buffer.GetGapLength() == BUFFSIZE-1); //test that gap length was inited to 100
 	assert(test_buffer.GetTextLength() == 0); // and the text length was also inited to 0
 	assert(test_buffer.GetGap() != NULL); //that GetGap is a valid pointer in to the buffer
 	assert(test_buffer.GetPoint() != NULL); //as is GetPoint
@@ -18,4 +17,13 @@ void Test::TestBuffer()
 	test_buffer.Delete(-3);
 	assert(test_buffer.GetTextLength() == 3);
 	cout << "Buffer Tests passed" << endl;
+}
+
+void Test::TestDisplay()
+{
+	World display_test;
+	uint8_t text[] = "Hurpadurp\nHere is some sample text that I want to type\nTo test weather or not I can display correctly\n\0";
+	display_test.world[0].Insert(text);
+	cout << "text length is" << display_test.world[0].GetTextLength() << endl;
+	display_test.DrawScreen(display_test.world, display_test.GetCurBuf());
 }

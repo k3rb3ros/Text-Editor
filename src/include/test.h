@@ -14,7 +14,7 @@ class Test
 	public:
 	void TestBuffer();
 	void TestCommandLoop(); //FIXME
-	void TestDisplay(); //FIXME
+	void TestDisplay();
 	void TestWolrd(); //FIXME
 	
 };

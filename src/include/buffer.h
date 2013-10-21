@@ -8,14 +8,12 @@
 class Buffer
 {
 	private:
-
 	bool modified;
 	uint8_t buffer[BUFFSIZE];
 	uint8_t* gap_end;
 	uint8_t* gap_start;	
 	uint8_t* point;
-	uint32_t gap_length;
-	uint32_t text_length;
+	uint16_t text_length;
 
 	public:
 	Buffer(); //constructor
@@ -27,7 +25,6 @@ class Buffer
 	//void CreateBuffer(); //implicit in constructor
 	void Delete(int32_t count);
 	void Insert(uint8_t* txt);
-	uint32_t GetGapLength();
 	uint32_t GetTextLength();
 	void SetModified(bool status);
 	void SetPointA(uint32_t location);

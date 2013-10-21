@@ -21,6 +21,11 @@ World::World(uint8_t* FileName)
 	file_name = FileName; 
 }
 
+uint8_t World::GetCurBuf()
+{
+	return current_buffer;
+}
+
 void World::AddBuffer()
 {
 	Buffer temp;
