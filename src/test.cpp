@@ -25,5 +25,6 @@ void Test::TestDisplay()
 	uint8_t text[] = "Hurpadurp\nHere is some sample text that I want to type\nTo test weather or not I can display correctly\n\0";
 	//uint8_t text[] = "Hurpadurp\0";
 	display_test.buffers[display_test.GetCurBuf()]->Insert(text);
+	assert(display_test.buffers[display_test.GetCurBuf()]->GetTextLength() > 0);
 	display_test.DrawScreen(display_test.buffers, display_test.GetCurBuf());
 }

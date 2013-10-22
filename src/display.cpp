@@ -22,20 +22,18 @@ void Window::GetLine(Buffer* current_buff, uint8_t* current_line, uint16_t &inde
 	}
 }
 
-char* Window::GetStatus()
+/*void Window::GetStatus(uint8_t* status)
 {
-	char* status = new char[81];
-	status[80] = 0;
-	//if(file_name != NULL) 
-	//{
+	if(file_name != NULL) 
+	{
+		sprintf(status, "%s Line:%u, Character:%u", file_name, 0, 69);
+	}
+	else
+	{
 		sprintf(status, " Line:%u, Character:%u", 0, 69);
-	//}
-	//else
-	//{
-	//	sprintf(status, " Line:%u, Character:%u", 0, 69);
-	//}	
+	}	
 	return status;
-}
+}*/
 
 void Window::ClearLine(uint8_t* current_line)
 {
@@ -72,13 +70,12 @@ void Window::DrawScreen(vector<Buffer*> buffers, uint8_t current_buffer)
 		{
 			ClearLine(current_line); //clearn anything in the line buffer
 			move(line_number, 0); //move the cursor to the line we are printing
-			//move(i, 0); //move the cursor to the line we are printing
 			GetLine(buffers[0], current_line, index, length_of_text, line_number); //get the line and update any values as needed
 			printw((char*) current_line);//(char*)current_line); //print the current line
-			//printw("%u", i++);//(char*)current_line); //print the current line
 		}
 		move(CONSOLE_HEIGHT, 0); //move the the Status line (Line 25)
-		printw((char*)GetStatus()); 
+		ClearLine(current_line); //clearn anything in the line buffer
+		printw("Status line"); 
 		refresh(); //Print the screen
 		getch(); //Wait for user input temporary until moved to command loop
 	}
