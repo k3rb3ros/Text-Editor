@@ -11,6 +11,7 @@ World::World()
 	buffers.push_back(temp); 
 	current_buffer = 0;
 	file_name = NULL;
+	running = true;
 }
 
 World::World(uint8_t* FileName)
@@ -19,11 +20,27 @@ World::World(uint8_t* FileName)
 	buffers.push_back(temp);
 	current_buffer = 1; 
 	file_name = FileName; 
+	running = true;
+}
+
+bool World::IsRunning()
+{
+	return running;
+}
+
+uint8_t* World::GetFileName()
+{
+	return file_name;
 }
 
 uint8_t World::GetCurBuf()
 {
 	return current_buffer;
+}
+
+vector<Buffer*> World::GetBuffers()
+{
+	return buffers;
 }
 
 void World::AddBuffer()

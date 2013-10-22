@@ -47,6 +47,7 @@ void Controller::ParseView(int32_t ch)
 void Controller::control()
 {
 	int32_t ch = getch(); //get the current character
+	if(ch == 'q') printw("stop this shit!\n");; //if we get q then stop the program
 	switch (mode)
 	{
 		case SEARCH: ParseSearch(ch);

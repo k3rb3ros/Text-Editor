@@ -1,17 +1,17 @@
 #include "include/display.h"
 
-void Window::GetLine(Buffer* current_buff, uint8_t* current_line, uint16_t &index, uint16_t &length_remaining, uint8_t &line_number)
+void Window::GetLine(vector<Buffer*> &buffers, uint8_t &current_buffer, uint8_t* current_line, uint16_t &index, uint16_t &length_remaining, uint8_t &line_number)
 {
 	uint8_t ch = 0;
 	uint16_t i = 0;
-	if(current_buff == NULL)
+	if(buffers[current_buffer] == NULL)
 	{
 		cerr << "Buffer passed to get line is null" << endl;
 		return;
 	}
 	while(length_remaining > 0)
 	{
-		ch = current_buff->GetCh(index++);
+		ch = buffers[current_buffer]->GetCh(index++);
 		current_line[i++] = ch;
 		length_remaining --;
 		if(ch == '\n') 
@@ -52,13 +52,14 @@ void Window::FreeWindow()
 	endwin();
 }
 
-void Window::DrawScreen(vector<Buffer*> buffers, uint8_t current_buffer)
+void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 {
 	uint8_t current_line[CONSOLE_WIDTH+1];
 	uint8_t line_number = 0;
 	uint16_t index = 0;
-	uint16_t length_of_text = buffers[0]->GetTextLength();
+	uint16_t length_of_text = buffers[current_buffer]->GetTextLength();
 	uint32_t i = 0;
+	
 	if(buffers.size() > 1)
 	{
 		//logic for drawing screen from two buffers goes here
@@ -70,7 +71,7 @@ void Window::DrawScreen(vector<Buffer*> buffers, uint8_t current_buffer)
 		{
 			ClearLine(current_line); //clearn anything in the line buffer
 			move(line_number, 0); //move the cursor to the line we are printing
-			GetLine(buffers[0], current_line, index, length_of_text, line_number); //get the line and update any values as needed
+			GetLine(buffers, current_buffer, current_line, index, length_of_text, line_number); //get the line and update any values as needed
 			printw((char*) current_line);//(char*)current_line); //print the current line
 		}
 		move(CONSOLE_HEIGHT, 0); //move the the Status line (Line 25)

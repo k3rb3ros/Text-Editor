@@ -22,9 +22,10 @@ void Test::TestBuffer()
 void Test::TestDisplay()
 {
 	World display_test;
+	uint8_t test = 0;
 	uint8_t text[] = "Hurpadurp\nHere is some sample text that I want to type\nTo test weather or not I can display correctly\n\0";
-	//uint8_t text[] = "Hurpadurp\0";
-	display_test.buffers[display_test.GetCurBuf()]->Insert(text);
+	display_test.GetBuffers()[display_test.GetCurBuf()]->Insert(text);
 	assert(display_test.buffers[display_test.GetCurBuf()]->GetTextLength() > 0);
-	display_test.DrawScreen(display_test.buffers, display_test.GetCurBuf());
+	display_test.DrawScreen(display_test.buffers, test);
+	cout << "Display Tests passed" << endl;
 }
