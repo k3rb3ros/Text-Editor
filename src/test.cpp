@@ -23,7 +23,7 @@ void Test::TestDisplay()
 {
 	World display_test;
 	uint8_t text[] = "Hurpadurp\nHere is some sample text that I want to type\nTo test weather or not I can display correctly\n\0";
-	display_test.world[0].Insert(text);
-	cout << "text length is" << display_test.world[0].GetTextLength() << endl;
-	display_test.DrawScreen(display_test.world, display_test.GetCurBuf());
+	//uint8_t text[] = "Hurpadurp\0";
+	display_test.buffers[display_test.GetCurBuf()]->Insert(text);
+	display_test.DrawScreen(display_test.buffers, display_test.GetCurBuf());
 }

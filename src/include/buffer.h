@@ -21,7 +21,7 @@ class Buffer
 	bool SearchF(uint8_t* txt);
 	uint8_t* GetGap();
 	uint8_t* GetPoint();
-	uint8_t GetCh(uint16_t character);
+	uint8_t GetCh(uint16_t index);
 	//void CreateBuffer(); //implicit in constructor
 	void Delete(int32_t count);
 	void Insert(uint8_t* txt);

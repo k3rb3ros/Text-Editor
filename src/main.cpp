@@ -11,9 +11,9 @@
 int main(void)
 {
 	Test tests;
-	tests.TestBuffer(); //test the basic buffer functions
+	//tests.TestBuffer(); //test the basic buffer functions
 	tests.TestDisplay(); //test the display (Visual Tests)
-	World TheWorld;
+	//World TheWorld;
 	//TheWorld.InitWindow();
 	//TheWorld.DrawScreen(TheWorld.world, 1);
 	//TheWorld.FreeWindow();

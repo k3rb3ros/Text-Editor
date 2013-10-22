@@ -25,6 +25,6 @@ class World : public Window
 	void DeleteBuffer(uint8_t buffer);
         void LoadWorld(uint8_t* FileName);
         void SaveWorld(uint8_t* FileName);
-	vector<Buffer> world;
+	vector<Buffer*> buffers;
 };
 #endif

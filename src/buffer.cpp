@@ -30,15 +30,15 @@ uint8_t* Buffer::GetPoint() //Returns the location of hte point
 	return point;
 }
 
-uint8_t Buffer::GetCh(uint16_t character)
+uint8_t Buffer::GetCh(uint16_t index)
 {
-	if(character > text_length || character >= BUFFSIZE)
+	if(index > text_length || index >= BUFFSIZE)
 	{
 		cerr << "Range not in buffer\n";
 		return 0;
 	}
-	if(character >= (gap_end - gap_start)) return buffer[(gap_end - gap_start) + character];
-	else return buffer[character];
+	if(index >= (gap_end - gap_start)) return buffer[(gap_end - gap_start) + index];
+	else return buffer[index];
 }
 
 void Buffer::Delete(int32_t count) //Deletes count uint8_t characters to the right of the point if count is positive; to the left of the point if count is negative
