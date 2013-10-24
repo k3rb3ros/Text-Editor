@@ -18,9 +18,8 @@ class Window
 
 	public:
 	Window(); //default Constructor
+	friend class World;
 	void DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer);
-	void FreeWindow(); //Get Rid of me
-	void InitWindow(); //Get Rid of me
 	void NcursesTest(); //Test ncurses
 	~Window(); //Destructor
 };

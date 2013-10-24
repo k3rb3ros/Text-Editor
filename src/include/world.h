@@ -6,19 +6,17 @@
 #include "display.h"
 #include "includes.h"
 
-class World : public Controller, public Window
+class World 
 {
         private:
+	bool running;
+	Controller control;
 	uint8_t current_buffer;
         uint8_t* file_name;
-
-	protected:	
-	bool running;
+	vector<Buffer*> buffers;
+	Window display;
         
 	public:
-	friend class Controller;
-	vector<Buffer*> buffers;
-	
         World();
 	World(uint8_t* FileName);
 	bool IsRunning();
@@ -27,9 +25,12 @@ class World : public Controller, public Window
 	vector<Buffer*> GetBuffers();
 	
 	void AddBuffer();
+	void Control();
 	void DeleteBuffer(uint8_t buffer);
         void LoadWorld(uint8_t* FileName);
+	void ReDisplay();
         void SaveWorld(uint8_t* FileName);
 	//~World();
 };
 #endif
+

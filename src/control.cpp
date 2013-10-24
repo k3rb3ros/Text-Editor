@@ -4,7 +4,12 @@
 */
 #include "include/control.h"
 
-void Controller::ParseSearch(int32_t ch)
+Controller::Controller()
+{
+	mode = INSERT;
+}
+
+void Controller::ParseSearch(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer)
 {
 	switch (ch)
 	{
@@ -14,7 +19,7 @@ void Controller::ParseSearch(int32_t ch)
 	}
 }
 
-void Controller::ParseReplace(int32_t ch)
+void Controller::ParseReplace(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer)
 {
 	switch (ch)
 	{
@@ -24,7 +29,23 @@ void Controller::ParseReplace(int32_t ch)
 	}
 }
 
-void Controller::ParseInsert(int32_t ch)
+void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer)
+{
+	uint8_t txt = 0;
+	uint8_t* txtptr = &txt;
+	switch (ch)
+	{
+		case ' ' ... '~': 
+		txt=(uint8_t) ch;
+		buffers[current_buffer]->Insert(txtptr);	
+		break;
+		case 0x8: buffers[current_buffer]->Delete(-1);
+		break;
+		default:;
+	}
+}
+
+void Controller::ParseView(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer)
 {
 	switch (ch)
 	{
@@ -34,32 +55,27 @@ void Controller::ParseInsert(int32_t ch)
 	}
 }
 
-void Controller::ParseView(int32_t ch)
+void Controller::SetRunning(bool* Running)
 {
-	switch (ch)
-	{
-		case 0:
-		break;
-		default:;
-	}
+	running = Running;
 }
 
-void Controller::control()
+void Controller::Control(vector<Buffer*> buffers, uint8_t current_buffer)
 {
 	int32_t ch = getch(); //get the current character
-	if(ch == 'q') printw("stop this shit!\n");; //if we get q then stop the program
+	if(ch == 0x1B) *running = false; //running = false; //if we get q then stop the program
 	switch (mode)
 	{
-		case SEARCH: ParseSearch(ch);
+		case SEARCH: ParseSearch(ch, buffers, current_buffer);
 		break;
 
-		case REPLACE: ParseReplace(ch);
+		case REPLACE: ParseReplace(ch, buffers, current_buffer);
 		break;
 
-		case INSERT: ParseInsert(ch);
+		case INSERT: ParseInsert(ch, buffers, current_buffer);
 		break;
 
-		case VIEW: ParseView(ch);
+		case VIEW: ParseView(ch, buffers, current_buffer);
 		break;
 		default:;
 	}

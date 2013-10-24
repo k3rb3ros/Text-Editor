@@ -9,18 +9,12 @@
 
 int main(void)
 {
-	bool running = true;
 	uint8_t make_it_work = 0;
-	Test tests;
-	tests.TestBuffer(); //test the basic buffer functions
-	tests.TestDisplay(); //test the display (Visual Tests)
 	World world;
-	world.InitWindow();
 	while(world.IsRunning())
 	{
-		world.control();
-		world.DrawScreen(world.buffers, make_it_work);
+		world.Control();
+		world.ReDisplay();
 	}
-	world.FreeWindow();
 	return 0;
 }

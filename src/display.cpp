@@ -47,11 +47,6 @@ Window::Window()
 	cbreak();
 }
 
-void Window::FreeWindow()
-{
-	endwin();
-}
-
 void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 {
 	uint8_t current_line[CONSOLE_WIDTH+1];
@@ -59,6 +54,8 @@ void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 	uint16_t index = 0;
 	uint16_t length_of_text = buffers[current_buffer]->GetTextLength();
 	uint32_t i = 0;
+	uint32_t x = 0;
+	uint32_t y = 0;
 	
 	if(buffers.size() > 1)
 	{
@@ -66,6 +63,7 @@ void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 	}
 	else //single buffer mode
 	{
+		getyx(stdscr, y, x); //save the cursor location
 		move(0,0); //set the cursor to the top left of the screen
 		while(length_of_text != 0)
 		{
@@ -77,15 +75,10 @@ void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 		move(CONSOLE_HEIGHT, 0); //move the the Status line (Line 25)
 		ClearLine(current_line); //clearn anything in the line buffer
 		printw("Status line"); 
+		move(y, x); //return the cursor location where it was
 		refresh(); //Print the screen
-		getch(); //Wait for user input temporary until moved to command loop
+		//getch(); //Wait for user input temporary until moved to command loop
 	}
-}
-
-void Window::InitWindow()
-{
-	initscr();
-	noecho();
 }
 
 void Window::NcursesTest()
