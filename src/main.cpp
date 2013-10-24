@@ -9,7 +9,6 @@
 
 int main(void)
 {
-	uint8_t make_it_work = 0;
 	World world;
 	while(world.IsRunning())
 	{

@@ -14,7 +14,6 @@ class World
 	uint8_t current_buffer;
         uint8_t* file_name;
 	vector<Buffer*> buffers;
-	Window display;
         
 	public:
         World();

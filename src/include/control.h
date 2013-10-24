@@ -5,7 +5,7 @@
 #include "includes.h"
 #include "display.h"
 
-class Controller 
+class Controller : public Window 
 {
 	private:
 	bool* running;

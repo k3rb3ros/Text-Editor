@@ -73,7 +73,7 @@ void World::LoadWorld(uint8_t* FileName)
 
 void World::ReDisplay()
 {
-	display.DrawScreen(buffers, current_buffer);		
+//	display.DrawScreen(buffers, current_buffer);		
 }
 
 void World::SaveWorld(uint8_t* FileName)
