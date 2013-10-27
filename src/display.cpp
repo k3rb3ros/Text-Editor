@@ -47,6 +47,15 @@ Window::Window()
 	cbreak();
 }
 
+void Window::AdvanceCursor()
+{
+ uint32_t x = 0;
+ uint32_t y = 0;
+ getyx(stdscr, y, x);
+ if(x < CONSOLE_WIDTH) move(y, x+1);
+ else if(x >= CONSOLE_WIDTH && y < CONSOLE_HEIGHT) move(y+1, 0);
+}
+
 void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 {
 	uint8_t current_line[CONSOLE_WIDTH+1];

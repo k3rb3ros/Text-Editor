@@ -9,7 +9,7 @@ void Test::TestBuffer()
 	assert(test_buffer.GetPoint() != NULL); //as is GetPoint
 	test_buffer.SetModified(true); //set modified to true
 	assert(test_buffer.GetModified() == true); //test that modified was in fact set
-	test_buffer.Insert(text);//put something in the buffer
+	test_buffer.Insert(text, 9);//put something in the buffer
 	assert(test_buffer.GetTextLength() == 9); //test that the reported length is correct
 	test_buffer.SetPointR(9); //move the point right 9 characters
 	test_buffer.Delete(3);

@@ -67,11 +67,10 @@ void Buffer::Delete(int32_t count) //Deletes count uint8_t characters to the rig
 	}	
 }
 
-void Buffer::Insert(uint8_t* txt) //insert a string at point, point ends up just after inserted text
+void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, point ends up just after inserted text
 {
-	uint16_t len = strlen((const char*)txt); //get the length of the string
 	uint16_t offset = 0;
-	if(len == 0)
+	if(str_len == 0)
 	{
 		cerr << "Text to insert is empty" << endl;
 		return;
@@ -83,7 +82,7 @@ void Buffer::Insert(uint8_t* txt) //insert a string at point, point ends up just
 	}
 	if(gap_start == point) //regular insert
 	{
-		for(uint16_t i=0; i<len; i++)
+		for(uint16_t i=0; i<str_len; i++)
 		{
 			*(point++) = txt[i]; //insert the text at the point and advance it
 			text_length ++; //keep track of how full the buffer is
@@ -96,7 +95,7 @@ void Buffer::Insert(uint8_t* txt) //insert a string at point, point ends up just
 		memmove(gap_end, gap_start, offset); //move offset bits from right of the buffer to left of the buffer 
 		gap_start = point; //update gap start to be at the same index as point
 		gap_end +=offset; //expand the gap by the number of characters that we moved before it
-		for(uint16_t i=0; i<len; i++) //insert the regular text
+		for(uint16_t i=0; i<str_len; i++) //insert the regular text
 		{
 			*(point++) = txt[i];
 			text_length ++;
@@ -109,7 +108,7 @@ void Buffer::Insert(uint8_t* txt) //insert a string at point, point ends up just
 		gap_start = point; //update gap start to be at the same index as point
 		gap_end -= offset; //shrink the gap and expand the area of the text after it
 		memmove(gap_start, gap_end, offset); //move the bits right of the gap
-		for(uint16_t i=0; i<len; i++) //insert the regular text
+		for(uint16_t i=0; i<str_len; i++) //insert the regular text
 		{
 			*(point++) = txt[i];
 			text_length ++;

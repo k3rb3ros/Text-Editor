@@ -24,7 +24,7 @@ class Buffer
 	uint8_t GetCh(uint16_t index);
 	//void CreateBuffer(); //implicit in constructor
 	void Delete(int32_t count);
-	void Insert(uint8_t* txt);
+	void Insert(uint8_t* txt, int32_t str_len);
 	uint32_t GetTextLength();
 	void SetModified(bool status);
 	void SetPointA(uint32_t location);
