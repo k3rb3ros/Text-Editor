@@ -36,12 +36,20 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 	uint8_t* txtptr = &txt;
 	switch (ch)
 	{
-		case ' ' ... '~': 
+		case ' ' ... '~': //Regual ascii range press
 		txt=(uint8_t) ch;
 		buffers[current_buffer]->Insert(&txt, 1);
 		AdvanceCursor();	
 		break;
-		case 0x8: buffers[current_buffer]->Delete(-1);
+		case 10:
+		buffers[current_buffer]->Insert(&txt, 1); //Enter key press
+		EndLine();
+		break;
+		case 127: if(buffers[current_buffer]->GetPoint() > 0) //Backspace Press
+		{
+			buffers[current_buffer]->Delete(-1); 
+			RetractCursor();
+		}
 		break;
 		default:;
 	}
@@ -99,5 +107,6 @@ void Controller::Control(vector<Buffer*> buffers, uint8_t current_buffer)
 		default:;
 	}
 	DrawScreen(buffers, current_buffer); //Draw the Screen
+	WriteStatus(NULL, mode, ch, 3, 4);
         ch = getch(); //get the current character
 }

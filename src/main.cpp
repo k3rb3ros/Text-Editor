@@ -13,7 +13,6 @@ int main(void)
 	while(world.IsRunning())
 	{
 		world.Control();
-		world.ReDisplay();
 	}
 	return 0;
 }

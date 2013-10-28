@@ -22,22 +22,42 @@ void Window::GetLine(vector<Buffer*> &buffers, uint8_t &current_buffer, uint8_t*
 	}
 }
 
-/*void Window::GetStatus(uint8_t* status)
-{
-	if(file_name != NULL) 
-	{
-		sprintf(status, "%s Line:%u, Character:%u", file_name, 0, 69);
-	}
-	else
-	{
-		sprintf(status, " Line:%u, Character:%u", 0, 69);
-	}	
-	return status;
-}*/
-
 void Window::ClearLine(uint8_t* current_line)
 {
-	for(uint8_t i=0; i<CONSOLE_WIDTH+1; i++) current_line[i] = 0;
+ 	uint32_t len = strlen((char*)current_line);
+	for(uint8_t i=0; i<len+1; i++) current_line[i] = 0;
+}
+
+void Window::WriteStatus(uint8_t* status, uint32_t mode, int32_t ch, uint32_t line_num, uint32_t column_num) //Print the status line
+{
+	uint8_t Mode[14] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+	uint32_t len = 0;
+	uint32_t y = 0;
+	uint32_t x = 0;
+
+	if(mode != WELCOME) //if not in Welcome mode turn on the status line
+	{	
+		switch (mode)
+		{
+			case SEARCH: strncpy((char*)Mode, "-- SEARCH --", 12); 
+			break;
+			case REPLACE: strncpy((char*)Mode, "-- REPLACE --", 13); 
+			break;
+			case INSERT: strncpy((char*)Mode,"-- INSERT --", 12); 
+			break;
+			default: ClearLine(Mode);
+		}
+		getyx(stdscr, y, x);
+		move(CONSOLE_HEIGHT, 0);
+		if(status != NULL)
+		{
+			len = strlen((char*)status); 
+			printw("%s %s, char(%d) %u:%u",status, Mode, ch, line_num, column_num);
+		}	
+		else printw("%s char(%d) %u:%u", Mode, ch, line_num, column_num);
+		move(y, x);
+		refresh();
+	}
 }
 
 Window::Window()
@@ -73,6 +93,7 @@ void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 	else //single buffer mode
 	{
 		getyx(stdscr, y, x); //save the cursor location
+		clear();
 		move(0,0); //set the cursor to the top left of the screen
 		while(length_of_text != 0)
 		{
@@ -82,12 +103,17 @@ void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 			printw((char*) current_line);//(char*)current_line); //print the current line
 		}
 		move(CONSOLE_HEIGHT, 0); //move the the Status line (Line 25)
-		ClearLine(current_line); //clearn anything in the line buffer
-		printw("Status line"); 
 		move(y, x); //return the cursor location where it was
 		refresh(); //Print the screen
-		//getch(); //Wait for user input temporary until moved to command loop
 	}
+}
+
+void Window::EndLine()
+{
+	uint32_t y = 0;
+	uint32_t x = 0;
+	getyx(stdscr, y, x);
+	if(y < CONSOLE_HEIGHT) move(++y, 0);
 }
 
 void Window::NcursesTest()
@@ -99,6 +125,15 @@ void Window::NcursesTest()
 	refresh();
 	getch();
 	endwin();
+}
+
+void Window::RetractCursor()
+{
+	uint32_t y = 0;
+	uint32_t x = 0;
+	getyx(stdscr, y, x);
+	if(x > 0) move(y,--x);
+	else if(y > 0) move(--y, 0);
 }
 
 Window::~Window()

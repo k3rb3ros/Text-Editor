@@ -10,4 +10,6 @@
 
 using namespace std;
 
+enum modes {SEARCH, REPLACE, INSERT, VIEW, WELCOME};
+
 #endif

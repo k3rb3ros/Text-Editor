@@ -20,14 +20,14 @@ bool Buffer::SearchF(uint8_t* txt)
 	return false;
 }
 
-uint8_t* Buffer::GetGap()
+uint16_t Buffer::GetGap()
 {
-	return gap_end;
+	return (gap_end - buffer);
 }
 
-uint8_t* Buffer::GetPoint() //Returns the location of hte point
+uint16_t Buffer::GetPoint() //Returns the location of hte point
 {
-	return point;
+	return (point - buffer);
 }
 
 uint8_t Buffer::GetCh(uint16_t index)
