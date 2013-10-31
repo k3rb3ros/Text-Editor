@@ -13,6 +13,7 @@ class Buffer
 	uint8_t* gap_end;
 	uint8_t* gap_start;	
 	uint8_t* point;
+	uint16_t line_number;
 	uint16_t text_length;
 
 	public:
@@ -20,15 +21,16 @@ class Buffer
 	bool GetModified();
 	bool SearchF(uint8_t* txt);
 	uint16_t GetGap();
+	uint16_t GetLineNumber();
 	uint16_t GetPoint();
 	uint8_t GetCh(uint16_t index);
-	//void CreateBuffer(); //implicit in constructor
 	void Delete(int32_t count);
 	void Insert(uint8_t* txt, int32_t str_len);
 	uint32_t GetTextLength();
+	void SetLineNumber(int16_t line_num);
 	void SetModified(bool status);
 	void SetPointA(uint32_t location);
-	void SetPointR(uint32_t count);
+	void SetPointR(int32_t count);
 	~Buffer();
 };
 

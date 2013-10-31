@@ -1,6 +1,6 @@
 #include "include/display.h"
 
-void Window::GetLine(vector<Buffer*> &buffers, uint8_t &current_buffer, uint8_t* current_line, uint16_t &index, uint16_t &length_remaining, uint8_t &line_number)
+void Window::GetWindow(vector<Buffer*> &buffers, uint8_t &current_buffer, uint8_t* current_window, uint16_t &index, uint16_t &length_remaining)
 {
 	uint8_t ch = 0;
 	uint16_t i = 0;
@@ -12,13 +12,8 @@ void Window::GetLine(vector<Buffer*> &buffers, uint8_t &current_buffer, uint8_t*
 	while(length_remaining > 0)
 	{
 		ch = buffers[current_buffer]->GetCh(index++);
-		current_line[i++] = ch;
+		if(ch != 0) current_window[i++] = ch;
 		length_remaining --;
-		if(ch == '\n') 
-		{
-			line_number ++;
-			break;
-		}
 	}
 }
 
@@ -47,15 +42,14 @@ void Window::WriteStatus(uint8_t* status, uint32_t mode, int32_t ch, uint32_t li
 			break;
 			default: ClearLine(Mode);
 		}
-		getyx(stdscr, y, x);
-		move(CONSOLE_HEIGHT, 0);
+		getyx(stdscr, y, x); //Save the current location of the cursor
 		if(status != NULL)
 		{
 			len = strlen((char*)status); 
-			printw("%s %s, char(%d) %u:%u",status, Mode, ch, line_num, column_num);
+			mvprintw(CONSOLE_HEIGHT, 0, "%s %s, char(%d) %u:%u",status, Mode, ch, line_num, column_num);
 		}	
-		else printw("%s char(%d) %u:%u", Mode, ch, line_num, column_num);
-		move(y, x);
+		else mvprintw(CONSOLE_HEIGHT, 0, "%s char(%d) %u:%u", Mode, ch, line_num, column_num);
+		move(y, x); //Restor the cursors original location
 		refresh();
 	}
 }
@@ -65,6 +59,7 @@ Window::Window()
 	initscr();
 	noecho();
 	cbreak();
+	keypad(stdscr, TRUE);
 }
 
 void Window::AdvanceCursor()
@@ -78,11 +73,9 @@ void Window::AdvanceCursor()
 
 void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 {
-	uint8_t current_line[CONSOLE_WIDTH+1];
-	uint8_t line_number = 0;
+	uint8_t window_buffer[(CONSOLE_WIDTH*CONSOLE_HEIGHT)+1];
 	uint16_t index = 0;
 	uint16_t length_of_text = buffers[current_buffer]->GetTextLength();
-	uint32_t i = 0;
 	uint32_t x = 0;
 	uint32_t y = 0;
 	
@@ -93,16 +86,13 @@ void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 	else //single buffer mode
 	{
 		getyx(stdscr, y, x); //save the cursor location
-		clear();
-		move(0,0); //set the cursor to the top left of the screen
+		clear(); //Clear anything on the screen
 		while(length_of_text != 0)
 		{
-			ClearLine(current_line); //clearn anything in the line buffer
-			move(line_number, 0); //move the cursor to the line we are printing
-			GetLine(buffers, current_buffer, current_line, index, length_of_text, line_number); //get the line and update any values as needed
-			printw((char*) current_line);//(char*)current_line); //print the current line
+			ClearLine(window_buffer); //clearn anything in the line buffer
+			GetWindow(buffers, current_buffer, window_buffer, index, length_of_text); //get the line and update any values as needed
+			mvprintw(0, 0, (char*) window_buffer);//(char*)current_line); //print the current line
 		}
-		move(CONSOLE_HEIGHT, 0); //move the the Status line (Line 25)
 		move(y, x); //return the cursor location where it was
 		refresh(); //Print the screen
 	}
@@ -141,4 +131,5 @@ Window::~Window()
 	echo();
 	nocbreak();
 	endwin();
+	keypad(stdscr, FALSE);
 }

@@ -11,7 +11,7 @@ class Window
 {
 	private:
 	void ClearLine(uint8_t* current_line);
-	void GetLine(vector<Buffer*> &buffers, uint8_t &current_buffer, uint8_t* current_line, uint16_t &index, uint16_t &length_remaining, uint8_t &line_number);
+	void GetWindow(vector<Buffer*> &buffers, uint8_t &current_buffer, uint8_t* current_window, uint16_t &index, uint16_t &length_remaining);
 
 	public:
 	Window(); //default Constructor

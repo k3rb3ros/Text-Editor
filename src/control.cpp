@@ -33,24 +33,40 @@ void Controller::ParseReplace(int32_t ch, vector<Buffer*> buffers, uint8_t curre
 void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer)
 {
 	uint8_t txt = 0;
-	uint8_t* txtptr = &txt;
 	switch (ch)
 	{
-		case ' ' ... '~': //Regual ascii range press
+		case ' ' ... '~': //Regular ascii range press
 		txt=(uint8_t) ch;
 		buffers[current_buffer]->Insert(&txt, 1);
 		AdvanceCursor();	
 		break;
-		case 10:
-		buffers[current_buffer]->Insert(&txt, 1); //Enter key press
+		case 10: //Enter key Press
+		buffers[current_buffer]->Insert(&txt, 1);
+		WriteStatus(&txt, mode, ch, 6, 9);
 		EndLine();
 		break;
-		case 127: if(buffers[current_buffer]->GetPoint() > 0) //Backspace Press
+		case 263: //Backspace Press
+                if(buffers[current_buffer]->GetPoint() > 0)
 		{
 			buffers[current_buffer]->Delete(-1); 
 			RetractCursor();
 		}
 		break;
+		case 258: //Down arrow press
+		EndLine();
+		break;
+		case 259: //Up arrow press
+		break;
+		case 260: //Left arrow press 
+                buffers[current_buffer]->SetPointR(-1);
+		RetractCursor();
+		break;
+		case 261: //Right arrow press
+		buffers[current_buffer]->SetPointR(1);
+		AdvanceCursor();
+		break;
+		case 330: //Delete key press
+		buffers[current_buffer]->Delete(1);
 		default:;
 	}
 }
@@ -129,6 +145,6 @@ void Controller::Control(vector<Buffer*> buffers, uint8_t current_buffer)
 		default:;
 	}
 	DrawScreen(buffers, current_buffer); //Draw the Screen
-	WriteStatus(NULL, mode, ch, 3, 4);
+	WriteStatus(NULL, mode, ch, buffers[current_buffer]->GetLineNumber(), buffers[current_buffer]->GetTextLength());
         ch = getch(); //get the current character
 }

@@ -7,6 +7,7 @@ Buffer::Buffer()
 	gap_end = &buffer[BUFFSIZE-1]; //set gap to point to the first index
 	gap_start = &buffer[0]; //set gap start to the point
 	for(uint32_t i=0; i<BUFFSIZE; i++) buffer[i] = 0; //zero fill the buffer
+	line_number = 1;
 	text_length = 0;
 }
 
@@ -25,6 +26,11 @@ uint16_t Buffer::GetGap()
 	return (gap_end - buffer);
 }
 
+uint16_t Buffer::GetLineNumber()
+{
+	return line_number;
+}
+
 uint16_t Buffer::GetPoint() //Returns the location of hte point
 {
 	return (point - buffer);
@@ -34,10 +40,10 @@ uint8_t Buffer::GetCh(uint16_t index)
 {
 	if(index > text_length || index >= BUFFSIZE)
 	{
-		cerr << "Range not in buffer\n";
 		return 0;
 	}
-	if(index >= (gap_end - gap_start)) return buffer[(gap_end - gap_start) + index];
+	//if(index >= (gap_end - gap_start)) return buffer[(gap_end - gap_start) + index];
+	if(index > GetPoint()) return buffer[(index-GetPoint())+GetGap()];
 	else return buffer[index];
 }
 
@@ -51,6 +57,7 @@ void Buffer::Delete(int32_t count) //Deletes count uint8_t characters to the rig
 			count *= -1; //invert count
 			for(int32_t i=0; i<count; i++) //delete characters to the left of point
 			{
+				if(*point == '\n') line_number--;
 				*(point--) = 0; //delete the uint8_tacters left of the point and move the point to the left
 				gap_start --; //update the start of the gap so that its at the new point
 				text_length --;
@@ -60,6 +67,7 @@ void Buffer::Delete(int32_t count) //Deletes count uint8_t characters to the rig
 		{
 			for(int32_t i=0; i<count; i++) //delete characters to the right of point (after gap)
 			{
+				if(*gap_end == '\n') line_number--;
 				*(gap_end++) = 0; //delete the uint8_tacters right of the point
 				text_length --;
 			}
@@ -85,7 +93,8 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 		for(uint16_t i=0; i<str_len; i++)
 		{
 			*(point++) = txt[i]; //insert the text at the point and advance it
-			text_length ++; //keep track of how full the buffer is
+			if(txt[i] == '\n') line_number++;
+			text_length += str_len; //keep track of how full the buffer is
 			gap_start ++; //increment gap_start 
 		}
 	}
@@ -98,7 +107,8 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 		for(uint16_t i=0; i<str_len; i++) //insert the regular text
 		{
 			*(point++) = txt[i];
-			text_length ++;
+			if(txt[i] == '\n') line_number++;
+			text_length += str_len;
 			gap_start ++; //increment gap_start 
 		}
 	}
@@ -111,7 +121,8 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 		for(uint16_t i=0; i<str_len; i++) //insert the regular text
 		{
 			*(point++) = txt[i];
-			text_length ++;
+			if(txt[i] == '\n') line_number++;
+			text_length += str_len;
 			gap_start ++; //increment gap_start 
 		}
 	}
@@ -120,6 +131,11 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 uint32_t Buffer::GetTextLength()
 {
 	return text_length;
+}
+
+void Buffer::SetLineNumber(int16_t line_num)
+{
+	line_number += line_num;
 }
 
 void Buffer::SetModified(bool status)
@@ -136,7 +152,7 @@ void Buffer::SetPointA(uint32_t location) //set the point to location
 	else cerr << "Unable to set point; Location is outside of buffer range \n";
 }
 
-void Buffer::SetPointR(uint32_t count) //Moves the point count uint8_tacters relative to the current location
+void Buffer::SetPointR(int32_t count) //Moves the point count characters relative to the current location
 {
 	if((point + count) > buffer && (point + count) < (buffer + BUFFSIZE))
 	{
