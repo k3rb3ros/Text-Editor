@@ -10,7 +10,7 @@
 class Window
 {
 	private:
-	void ClearLine(uint8_t* current_line);
+	void ClearLine(uint8_t* current_line, uint16_t len);
 	void GetWindow(vector<Buffer*> &buffers, uint8_t &current_buffer, uint8_t* current_window, uint16_t &index, uint16_t &length_remaining);
 
 	public:

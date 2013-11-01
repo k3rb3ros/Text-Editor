@@ -14,7 +14,14 @@ void Controller::ParseSearch(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 {
 	switch (ch)
 	{
-		case 0:
+		case 18:
+		mode = REPLACE;
+		break;
+		case 9:
+		mode = INSERT;
+		break;
+		case 27:
+		mode = VIEW;
 		break;
 		default:;
 	}
@@ -24,7 +31,14 @@ void Controller::ParseReplace(int32_t ch, vector<Buffer*> buffers, uint8_t curre
 {
 	switch (ch)
 	{
-		case 0:
+		case 6:
+		mode = SEARCH;
+		break;
+		case 9:
+		mode = INSERT;
+		break;
+		case 27:
+		mode = VIEW;
 		break;
 		default:;
 	}
@@ -35,6 +49,15 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 	uint8_t txt = 0;
 	switch (ch)
 	{
+		case 6:
+		mode = SEARCH;
+		break;
+		case 27:
+		mode = VIEW;
+		break;
+		case 18:
+		mode = REPLACE;
+		break;
 		case ' ' ... '~': //Regular ascii range press
 		txt=(uint8_t) ch;
 		buffers[current_buffer]->Insert(&txt, 1);
@@ -76,7 +99,14 @@ void Controller::ParseView(int32_t ch, vector<Buffer*> buffers, uint8_t current_
 {
 	switch (ch)
 	{
-		case 0:
+		case 6:
+		mode = SEARCH;
+		break;
+		case 9:
+		mode = INSERT;
+		break;
+		case 18:
+		mode = REPLACE;
 		break;
 		default:;
 	}
@@ -109,7 +139,7 @@ void Controller::Welcome(int32_t &ch)
  printw("              +NMMMM`   -yNMMMNy/...+:sNy/oN-       \n");
  printw("               `:omNy     `+dNNMm:dNNMMMmy:         \n");
  printw("                    +o        `/msmMNyo:            \n");
- printw("                Press any key to continue\n");
+ printw("                 Press any key to continue\n");
  refresh();
  while(ch == 0) //Wait for user input
  {
@@ -127,7 +157,7 @@ void Controller::SetRunning(bool* Running)
 
 void Controller::Control(vector<Buffer*> buffers, uint8_t current_buffer)
 {
-	if(ch == 0x1B) *running = false; //running = false; //if we get q then stop the program
+	if(ch == 268) *running = false; //running = false; //if we get q then stop the program
 	switch (mode) //check what mode we are in
 	{
 		case SEARCH: ParseSearch(ch, buffers, current_buffer);
