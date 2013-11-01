@@ -17,10 +17,9 @@ void Window::GetWindow(vector<Buffer*> &buffers, uint8_t &current_buffer, uint8_
 	}
 }
 
-void Window::ClearLine(uint8_t* current_line)
+void Window::ClearLine(uint8_t* current_line, uint16_t len)
 {
- 	uint32_t len = strlen((char*)current_line);
-	for(uint8_t i=0; i<len+1; i++) current_line[i] = 0;
+	for(uint16_t i=0; i<len; i++) current_line[i] = 0;
 }
 
 void Window::WriteStatus(uint8_t* status, uint32_t mode, int32_t ch, uint32_t line_num, uint32_t column_num) //Print the status line
@@ -40,7 +39,7 @@ void Window::WriteStatus(uint8_t* status, uint32_t mode, int32_t ch, uint32_t li
 			break;
 			case INSERT: strncpy((char*)Mode,"-- INSERT --", 12); 
 			break;
-			default: ClearLine(Mode);
+			default: ClearLine(Mode, 14);
 		}
 		getyx(stdscr, y, x); //Save the current location of the cursor
 		if(status != NULL)
@@ -89,7 +88,7 @@ void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 		clear(); //Clear anything on the screen
 		while(length_of_text != 0)
 		{
-			ClearLine(window_buffer); //clearn anything in the line buffer
+			ClearLine(window_buffer, (CONSOLE_WIDTH*CONSOLE_HEIGHT)+1); //clearn anything in the line buffer
 			GetWindow(buffers, current_buffer, window_buffer, index, length_of_text); //get the line and update any values as needed
 			mvprintw(0, 0, (char*) window_buffer);//(char*)current_line); //print the current line
 		}
