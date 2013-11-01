@@ -20,7 +20,8 @@ class Buffer
 	Buffer(); //constructor
 	bool GetModified();
 	bool SearchF(uint8_t* txt);
-	uint16_t GetGap();
+	uint16_t GetGapE();
+	uint16_t GetGapS();
 	uint16_t GetLineNumber();
 	uint16_t GetPoint();
 	uint8_t GetCh(uint16_t index);

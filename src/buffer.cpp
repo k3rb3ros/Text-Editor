@@ -21,9 +21,14 @@ bool Buffer::SearchF(uint8_t* txt)
 	return false;
 }
 
-uint16_t Buffer::GetGap()
+uint16_t Buffer::GetGapE()
 {
 	return (gap_end - buffer);
+}
+
+uint16_t Buffer::GetGapS()
+{
+	return (gap_start - buffer);
 }
 
 uint16_t Buffer::GetLineNumber()
@@ -43,8 +48,9 @@ uint8_t Buffer::GetCh(uint16_t index)
 		return 0;
 	}
 	//if(index >= (gap_end - gap_start)) return buffer[(gap_end - gap_start) + index];
-	if(index > GetPoint()) return buffer[(index-GetPoint())+GetGap()];
-	else return buffer[index];
+	if(index < GetGapS()) return buffer[index];
+        else return buffer[(index-GetGapS()+GetGapE())];
+
 }
 
 void Buffer::Delete(int32_t count) //Deletes count uint8_t characters to the right of the point if count is positive; to the left of the point if count is negative
@@ -52,6 +58,8 @@ void Buffer::Delete(int32_t count) //Deletes count uint8_t characters to the rig
 	if((point + count) < buffer || (point + count) > (buffer + BUFFSIZE)) cerr << "Invalid range to delete\n"; 
 	else
 	{
+	    if(text_length > 0)
+            {
 		if(count < 0)
 		{
 			count *= -1; //invert count
@@ -72,6 +80,7 @@ void Buffer::Delete(int32_t count) //Deletes count uint8_t characters to the rig
 				text_length --;
 			}
 		}
+            }
 	}	
 }
 
@@ -83,11 +92,16 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 		cerr << "Text to insert is empty" << endl;
 		return;
 	}
-	else if(text_length >= BUFFSIZE)
+	else if(gap_end == gap_start)
 	{
 		cerr << "Buffer is full unable to insert" << endl;
 		return;
 	}
+	/*else if(text_length >= BUFFSIZE)
+	{
+		cerr << "Buffer is full unable to insert" << endl;
+		return;
+	}*/
 	if(gap_start == point) //regular insert
 	{
 		for(uint16_t i=0; i<str_len; i++)
@@ -101,7 +115,7 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 	else if(gap_start < point)//The cursor has been moved right so we should shift that many characters right of the gap left of it
 	{
 		offset = point - gap_start; //Get the offset
-		memmove(gap_end, gap_start, offset); //move offset bits from right of the buffer to left of the buffer 
+		memmove(gap_start, gap_end, offset); //move the bits right of the gap
 		gap_start = point; //update gap start to be at the same index as point
 		gap_end +=offset; //expand the gap by the number of characters that we moved before it
 		for(uint16_t i=0; i<str_len; i++) //insert the regular text
@@ -115,9 +129,10 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 	else //gap_start > point the cursor has been moved left so we should shift offset characters from left of the gap to right of the gap
 	{
 		offset = gap_start - point; 
-		gap_start = point; //update gap start to be at the same index as point
+		
 		gap_end -= offset; //shrink the gap and expand the area of the text after it
-		memmove(gap_start, gap_end, offset); //move the bits right of the gap
+		memmove(gap_end, point, offset); //move offset bits from right of the buffer to left of the buffer 
+		gap_start = point; //update gap start to be at the same index as point
 		for(uint16_t i=0; i<str_len; i++) //insert the regular text
 		{
 			*(point++) = txt[i];
