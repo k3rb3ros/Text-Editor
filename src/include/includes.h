@@ -10,6 +10,10 @@
 
 using namespace std;
 
+#define LINE 0x1
+#define SELECTION 0x2
+#define SEARCH_RESULT 0x4
+
 enum modes {SEARCH, REPLACE, INSERT, VIEW, WELCOME};
 
 #endif

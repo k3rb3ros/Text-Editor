@@ -48,7 +48,7 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		case 263: //Backspace Press
                 if(buffers[current_buffer]->GetPoint() > 0)
 		{
-			buffers[current_buffer]->Delete(-1); 
+			buffers[current_buffer]->Delete(-1);
 			RetractCursor();
 		}
 		break;
@@ -56,6 +56,7 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		EndLine();
 		break;
 		case 259: //Up arrow press
+		UpLine();
 		break;
 		case 260: //Left arrow press 
                 buffers[current_buffer]->SetPointR(-1);
@@ -85,7 +86,7 @@ void Controller::Welcome(int32_t &ch)
 {
  curs_set(0); //Turn off the cursor
  //Display Welcome Message
- printw("                         Kedit By K3rb3ros\n");
+ printw("                       Kedit By K3rb3ros\n");
  printw("                  -so/-                 .-          \n");
  printw("                 os-..:syo++o/+/o+++/oysd++/        \n");
  printw("                -d......./y/-.-...:-//:m+:./y`      \n");
@@ -108,6 +109,7 @@ void Controller::Welcome(int32_t &ch)
  printw("              +NMMMM`   -yNMMMNy/...+:sNy/oN-       \n");
  printw("               `:omNy     `+dNNMm:dNNMMMmy:         \n");
  printw("                    +o        `/msmMNyo:            \n");
+ printw("                Press any key to continue\n");
  refresh();
  while(ch == 0) //Wait for user input
  {

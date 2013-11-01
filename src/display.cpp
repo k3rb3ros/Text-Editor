@@ -126,6 +126,14 @@ void Window::RetractCursor()
 	else if(y > 0) move(--y, 0);
 }
 
+void Window::UpLine()
+{
+	uint32_t y = 0;
+	uint32_t x = 0;
+	getyx(stdscr, y, x);
+	if(y > 0) move(--y, 0);
+}
+
 Window::~Window()
 {
 	echo();

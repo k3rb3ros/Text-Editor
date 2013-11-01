@@ -9,6 +9,9 @@ Buffer::Buffer()
 	for(uint32_t i=0; i<BUFFSIZE; i++) buffer[i] = 0; //zero fill the buffer
 	line_number = 1;
 	text_length = 0;
+	Marker* first_line = new Marker(LINE); //Create the first line marker
+        first_line->SetBegin(&buffer[0]); //Set it to point to the begining of the buffer
+	markers.push_back(first_line); 
 }
 
 bool Buffer::GetModified()

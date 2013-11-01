@@ -9,7 +9,6 @@ class Controller : public Window
 {
 	private:
 	bool* running;
-	//enum modes {SEARCH, REPLACE, INSERT, VIEW, WELCOME};
 	int32_t ch;
 	uint8_t mode;
 

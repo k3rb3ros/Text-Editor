@@ -5,7 +5,8 @@ void Test::TestBuffer()
 	uint8_t text[] = "Hurpadurp\0";
 	assert(test_buffer.GetModified() == false); //test modified is inited to false
 	assert(test_buffer.GetTextLength() == 0); // and the text length was also inited to 0
-	assert(test_buffer.GetGap() != 0); //that GetGap is a valid pointer in to the buffer
+	assert(test_buffer.GetGapS() == test_buffer.GetPoint()); //that GetGap is a valid pointer in to the buffer
+	assert(test_buffer.GetGapE() == BUFFSIZE-1);
 	assert(test_buffer.GetPoint() == 0); //as is GetPoint
 	test_buffer.SetModified(true); //set modified to true
 	assert(test_buffer.GetModified() == true); //test that modified was in fact set

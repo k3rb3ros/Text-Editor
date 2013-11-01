@@ -2,6 +2,7 @@
 #define BUFFER_H
 
 #include "includes.h"
+#include "marker.h"
 
 #define BUFFSIZE 10000
 
@@ -32,6 +33,7 @@ class Buffer
 	void SetModified(bool status);
 	void SetPointA(uint32_t location);
 	void SetPointR(int32_t count);
+	vector<Marker*> markers;
 	~Buffer();
 };
 
