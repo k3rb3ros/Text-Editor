@@ -5,12 +5,13 @@
 
 class Marker
 {
-	private:
+	protected:
 	uint8_t type;
 	uint8_t* begin;
 	uint8_t* end;
 
 	public:
+        friend class Buffer;
 	Marker(uint8_t Type); 
 	uint8_t* GetBegin();
 	uint8_t* GetEnd();

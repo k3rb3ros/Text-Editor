@@ -71,13 +71,14 @@ void World::LoadWorld(uint8_t* FileName)
 	//Load the world from the file given
 }
 
-void World::ReDisplay()
-{
-//	display.DrawScreen(buffers, current_buffer);		
-}
-
 void World::SaveWorld(uint8_t* FileName)
 {
 	//FIXME
 	//Save the world to the file given
+}
+
+World::~World()
+{
+	delete buffers[0]; //free the default buffer
+	buffers.erase(buffers.begin());
 }

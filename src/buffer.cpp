@@ -9,9 +9,6 @@ Buffer::Buffer()
 	for(uint32_t i=0; i<BUFFSIZE; i++) buffer[i] = 0; //zero fill the buffer
 	line_number = 1;
 	text_length = 0;
-	Marker* first_line = new Marker(LINE); //Create the first line marker
-        first_line->SetBegin(&buffer[0]); //Set it to point to the begining of the buffer
-	markers.push_back(first_line); 
 }
 
 bool Buffer::GetModified()
@@ -22,6 +19,21 @@ bool Buffer::GetModified()
 bool Buffer::SearchF(uint8_t* txt)
 {
 	return false;
+}
+
+bool Buffer::SetMarkLen(uint16_t index, uint16_t len)
+{
+        Marker* mark = NULL;
+        uint16_t gap_index = MapToGap(index);
+	if(markers.find(gap_index) == markers.end()) return false; //if a mark doesn't exist at this index then return false
+         mark = markers[gap_index];
+	 mark -> end = (mark -> begin + len); //otherwise set its length
+	return true;
+}
+
+uint32_t Buffer::GetTextLength()
+{
+	return text_length;
 }
 
 uint16_t Buffer::GetGapE()
@@ -39,9 +51,17 @@ uint16_t Buffer::GetLineNumber()
 	return line_number;
 }
 
-uint16_t Buffer::GetPoint() //Returns the location of hte point
+uint16_t Buffer::GetPoint() //Returns the location of the point
 {
 	return (point - buffer);
+}
+
+uint16_t Buffer::MapToGap(uint16_t index) //Map a character index in the array to its actual position
+{
+	if(index >= BUFFSIZE) return 0;
+	
+  	if(index < GetGapS()) return index;
+  	else return(index-GetGapS()+GetGapE());
 }
 
 uint8_t Buffer::GetCh(uint16_t index)
@@ -50,10 +70,23 @@ uint8_t Buffer::GetCh(uint16_t index)
 	{
 		return 0;
 	}
-	//if(index >= (gap_end - gap_start)) return buffer[(gap_end - gap_start) + index];
-	if(index < GetGapS()) return buffer[index];
-        else return buffer[(index-GetGapS()+GetGapE())];
+	return buffer[MapToGap(index)]; 
+}
 
+void Buffer::CreateMark(uint16_t index, uint8_t type)
+{
+        uint16_t gap_index = MapToGap(index);
+	Marker* mark = new Marker(type);
+        
+	mark -> begin = &buffer[gap_index];
+	mark -> end = mark -> begin+1; //Set the end
+	
+        markers.insert(pair<uint16_t, Marker*>(gap_index, mark)); //map our mark to the buffer
+}
+
+void Buffer::DeleteMark(uint16_t index)
+{
+        markers.erase(MapToGap(index));
 }
 
 void Buffer::Delete(int32_t count) //Deletes count uint8_t characters to the right of the point if count is positive; to the left of the point if count is negative
@@ -144,11 +177,6 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 			gap_start ++; //increment gap_start 
 		}
 	}
-}
-
-uint32_t Buffer::GetTextLength()
-{
-	return text_length;
 }
 
 void Buffer::SetLineNumber(int16_t line_num)

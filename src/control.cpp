@@ -46,7 +46,7 @@ void Controller::ParseReplace(int32_t ch, vector<Buffer*> buffers, uint8_t curre
 
 void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer)
 {
-	uint8_t txt = 0;
+	uint8_t txt = (uint8_t) ch;
 	switch (ch)
 	{
 		case 6:
@@ -59,13 +59,12 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		mode = REPLACE;
 		break;
 		case ' ' ... '~': //Regular ascii range press
-		txt=(uint8_t) ch;
 		buffers[current_buffer]->Insert(&txt, 1);
 		AdvanceCursor();	
 		break;
 		case 10: //Enter key Press
 		buffers[current_buffer]->Insert(&txt, 1);
-		WriteStatus(&txt, mode, ch, 6, 9);
+		WriteStatus(&txt, mode, ch, 6, 9); //FIXME
 		EndLine();
 		break;
 		case 263: //Backspace Press

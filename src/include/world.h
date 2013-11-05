@@ -25,11 +25,10 @@ class World
 	
 	void AddBuffer();
 	void Control();
-	void DeleteBuffer(uint8_t buffer);
+	void DeleteBuffer(uint8_t buffer); //FIXME
         void LoadWorld(uint8_t* FileName);
-	void ReDisplay();
         void SaveWorld(uint8_t* FileName);
-	//~World();
+	~World();
 };
 #endif
 
