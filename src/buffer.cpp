@@ -26,8 +26,8 @@ bool Buffer::SetMarkLen(uint16_t index, uint16_t len)
         Marker* mark = NULL;
         uint16_t gap_index = MapToGap(index);
 	if(markers.find(gap_index) == markers.end()) return false; //if a mark doesn't exist at this index then return false
-         mark = markers[gap_index];
-	 mark -> end = (mark -> begin + len); //otherwise set its length
+        mark = markers[gap_index];
+	mark -> end = (mark -> begin + len); //otherwise set its length
 	return true;
 }
 
@@ -81,7 +81,7 @@ void Buffer::CreateMark(uint16_t index, uint8_t type)
 	mark -> begin = &buffer[gap_index];
 	mark -> end = mark -> begin+1; //Set the end
 	
-        markers.insert(pair<uint16_t, Marker*>(gap_index, mark)); //map our mark to the buffer
+        markers[gap_index] = mark; //map our mark to the buffer
 }
 
 void Buffer::DeleteMark(uint16_t index)
@@ -143,13 +143,13 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 		for(uint16_t i=0; i<str_len; i++)
 		{
 			*(point++) = txt[i]; //insert the text at the point and advance it
+			gap_start ++; //increment gap_start 
+			text_length += str_len; //keep track of how full the buffer is
 			if(txt[i] == '\n') 
 			{
-                                CreateMark(point-buffer, EOL); 
                         	line_number++;
+                                CreateMark((point-buffer)-1, EOL); 
                         }
-			text_length += str_len; //keep track of how full the buffer is
-			gap_start ++; //increment gap_start 
 		}
 	}
 	else if(gap_start < point)//The cursor has been moved right so we should shift that many characters right of the gap left of it
@@ -161,13 +161,13 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 		for(uint16_t i=0; i<str_len; i++) //insert the regular text
 		{
 			*(point++) = txt[i];
+			gap_start ++; //increment gap_start 
+			text_length += str_len;
 			if(txt[i] == '\n') 
                         {
-                                CreateMark(point-buffer, EOL); 
                         	line_number++;
+                                CreateMark((point-buffer)-1, EOL); 
                         }
-			text_length += str_len;
-			gap_start ++; //increment gap_start 
 		}
 	}
 	else //gap_start > point the cursor has been moved left so we should shift offset characters from left of the gap to right of the gap
@@ -180,13 +180,13 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 		for(uint16_t i=0; i<str_len; i++) //insert the regular text
 		{
 			*(point++) = txt[i];
+			gap_start ++; //increment gap_start 
+			text_length += str_len;
 			if(txt[i] == '\n')
                         {
-                                CreateMark(point-buffer, EOL); 
                         	line_number++;
+                                CreateMark((point-buffer)-1, EOL); 
                         }
-			text_length += str_len;
-			gap_start ++; //increment gap_start 
 		}
 	}
 }
@@ -226,5 +226,4 @@ Buffer::~Buffer()
    {
      delete it->second;
    }
-
 }
