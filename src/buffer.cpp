@@ -143,7 +143,11 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 		for(uint16_t i=0; i<str_len; i++)
 		{
 			*(point++) = txt[i]; //insert the text at the point and advance it
-			if(txt[i] == '\n') line_number++;
+			if(txt[i] == '\n') 
+			{
+                                CreateMark(point-buffer, EOL); 
+                        	line_number++;
+                        }
 			text_length += str_len; //keep track of how full the buffer is
 			gap_start ++; //increment gap_start 
 		}
@@ -157,7 +161,11 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 		for(uint16_t i=0; i<str_len; i++) //insert the regular text
 		{
 			*(point++) = txt[i];
-			if(txt[i] == '\n') line_number++;
+			if(txt[i] == '\n') 
+                        {
+                                CreateMark(point-buffer, EOL); 
+                        	line_number++;
+                        }
 			text_length += str_len;
 			gap_start ++; //increment gap_start 
 		}
@@ -172,7 +180,11 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 		for(uint16_t i=0; i<str_len; i++) //insert the regular text
 		{
 			*(point++) = txt[i];
-			if(txt[i] == '\n') line_number++;
+			if(txt[i] == '\n')
+                        {
+                                CreateMark(point-buffer, EOL); 
+                        	line_number++;
+                        }
 			text_length += str_len;
 			gap_start ++; //increment gap_start 
 		}
@@ -209,4 +221,10 @@ void Buffer::SetPointR(int32_t count) //Moves the point count characters relativ
 
 Buffer::~Buffer()
 {
+   map<uint16_t, Marker*>::iterator it;
+   for(it=markers.begin(); it!=markers.end(); ++it) //FIXME
+   {
+     delete it->second;
+   }
+
 }

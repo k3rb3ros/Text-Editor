@@ -10,6 +10,7 @@
 class Window
 {
 	private:
+	uint16_t CursorPosLine(uint16_t line, map<uint16_t, Marker*> marks);
 	void ClearLine(uint8_t* current_line, uint16_t len);
 	void GetWindow(vector<Buffer*> &buffers, uint8_t &current_buffer, uint8_t* current_window, uint16_t &index, uint16_t &length_remaining);
 

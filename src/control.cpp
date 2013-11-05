@@ -64,7 +64,6 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		break;
 		case 10: //Enter key Press
 		buffers[current_buffer]->Insert(&txt, 1);
-		WriteStatus(&txt, mode, ch, 6, 9); //FIXME
 		EndLine();
 		break;
 		case 263: //Backspace Press
@@ -86,7 +85,7 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		break;
 		case 261: //Right arrow press
 		buffers[current_buffer]->SetPointR(1);
-		AdvanceCursor();
+		AdvanceCursor();	
 		break;
 		case 330: //Delete key press
 		buffers[current_buffer]->Delete(1);

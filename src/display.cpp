@@ -63,11 +63,11 @@ Window::Window()
 
 void Window::AdvanceCursor()
 {
- uint32_t x = 0;
- uint32_t y = 0;
- getyx(stdscr, y, x);
- if(x < CONSOLE_WIDTH) move(y, x+1);
- else if(x >= CONSOLE_WIDTH && y < CONSOLE_HEIGHT) move(y+1, 0);
+ 	uint32_t x = 0;
+ 	uint32_t y = 0;
+ 	getyx(stdscr, y, x);
+ 	if(x < CONSOLE_WIDTH-1) move(y, x+1);
+	else if(x >= CONSOLE_WIDTH-1 && y < CONSOLE_HEIGHT-1) move(y+1, 0);
 }
 
 void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)

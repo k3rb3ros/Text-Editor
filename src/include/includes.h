@@ -12,7 +12,7 @@
 using namespace std;
 
 #define EMPTY 0x0
-#define LINE 0x1
+#define EOL 0x1
 #define SELECTION 0x2
 #define SEARCH_RESULT 0x4
 
