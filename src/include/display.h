@@ -4,9 +4,6 @@
 #include "buffer.h"
 #include "includes.h"
 
-#define CONSOLE_HEIGHT 23
-#define CONSOLE_WIDTH 80
-
 class Window
 {
 	private:
@@ -19,7 +16,7 @@ class Window
 	friend class World;
 	void AdvanceCursor();
 	void DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer);
-	void EndLine();
+	void EndLine(Buffer* buffer);
 	void NcursesTest(); //Test ncurses
 	void RetractCursor();
 	void UpLine();

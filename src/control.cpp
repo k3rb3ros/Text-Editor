@@ -64,7 +64,7 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		break;
 		case 10: //Enter key Press
 		buffers[current_buffer]->Insert(&txt, 1);
-		EndLine();
+		EndLine(buffers[current_buffer]);
 		break;
 		case 263: //Backspace Press
                 if(buffers[current_buffer]->GetPoint() > 0)
@@ -74,7 +74,7 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		}
 		break;
 		case 258: //Down arrow press
-		EndLine();
+		EndLine(buffers[current_buffer]);
 		break;
 		case 259: //Up arrow press
 		UpLine();

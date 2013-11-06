@@ -97,12 +97,13 @@ void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 	}
 }
 
-void Window::EndLine()
+void Window::EndLine(Buffer* buffer)
 {
 	uint32_t y = 0;
 	uint32_t x = 0;
 	getyx(stdscr, y, x);
-	if(y < CONSOLE_HEIGHT) move(++y, 0);
+	if(x = buffer->GoForwardALine(x) == -1) return; //Advance the cursor
+	if(y < CONSOLE_HEIGHT) move(++y, x);
 }
 
 void Window::NcursesTest()

@@ -21,20 +21,22 @@ class Buffer
 	map<uint16_t, Marker*> markers;
 
 	public:
-	Buffer(); //constructor
+	Buffer();
 	bool GetModified();
 	bool SearchF(uint8_t* txt);
         bool SetMarkLen(uint16_t index, uint16_t len);
+        int32_t GoForwardALine(uint32_t x);
 	uint32_t GetTextLength();
 	uint16_t GetGapE();
 	uint16_t GetGapS();
 	uint16_t GetLineNumber();
 	uint16_t GetMark(uint16_t index);
 	uint16_t GetPoint();
+	uint16_t GoBackALine(uint16_t x);
         uint16_t MapToGap(uint16_t index);
 	uint8_t GetCh(uint16_t index);
 	void CreateMark(uint16_t index, uint8_t type);
-	void DeleteMark(uint16_t index); //FIXME
+	void DeleteMark(uint16_t index);
 	void Delete(int32_t count);
 	void Insert(uint8_t* txt, int32_t str_len);
 	void SetLineNumber(int16_t line_num);

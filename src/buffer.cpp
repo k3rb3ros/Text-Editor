@@ -56,6 +56,36 @@ uint16_t Buffer::GetPoint() //Returns the location of the point
 	return (point - buffer);
 }
 
+uint16_t Buffer::GoBackALine(uint16_t x)
+{
+        uint16_t point = GetPoint();
+	
+	return 0;
+}
+
+int32_t Buffer::GoForwardALine(uint32_t x)
+{
+	uint32_t i = GetPoint(); //set i to the current point in the buffer
+
+	while(i < BUFFSIZE)
+	{
+		if(buffer[i]==0) return -1;
+		if(buffer[i]=='\n') //find the start of the next line
+		{
+			for(uint32_t j=0; j<=x; j++, i=MapToGap(++i))//advance to x or the end of that line
+			{
+				if(buffer[i] == 0)
+				{
+					SetPointA(i); //Set the point to the new cursor position		
+					return j%CONSOLE_WIDTH; //return the horizontal the new horizontal position of the cursor
+				}
+			}
+		}
+		i = MapToGap(++i);
+	}
+	return -1;
+}
+
 uint16_t Buffer::MapToGap(uint16_t index) //Map a character index in the array to its actual position
 {
 	if(index >= BUFFSIZE) return 0;
@@ -75,13 +105,19 @@ uint8_t Buffer::GetCh(uint16_t index)
 
 void Buffer::CreateMark(uint16_t index, uint8_t type)
 {
-        uint16_t gap_index = MapToGap(index);
-	Marker* mark = new Marker(type);
         
-	mark -> begin = &buffer[gap_index];
-	mark -> end = mark -> begin+1; //Set the end
-	
-        markers[gap_index] = mark; //map our mark to the buffer
+        uint16_t gap_index = MapToGap(index);
+	map<uint16_t, Marker*>::iterator it; //declare a map iterator (for find)
+	it = markers.find(gap_index);
+
+	if(it != markers.end())
+	{
+		Marker* mark = new Marker(type);
+        
+		mark -> begin = &buffer[gap_index];
+		mark -> end = mark -> begin+1; //Set the end	
+        	markers[gap_index] = mark; //map our mark to the buffer
+	}
 }
 
 void Buffer::DeleteMark(uint16_t index)
@@ -222,7 +258,7 @@ void Buffer::SetPointR(int32_t count) //Moves the point count characters relativ
 Buffer::~Buffer()
 {
    map<uint16_t, Marker*>::iterator it;
-   for(it=markers.begin(); it!=markers.end(); ++it) //FIXME
+   for(it=markers.begin(); it!=markers.end(); ++it)
    {
      delete it->second;
    }

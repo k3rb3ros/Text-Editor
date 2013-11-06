@@ -12,6 +12,7 @@ class Marker
 
 	public:
         friend class Buffer;
+        friend class Display;
 	Marker(uint8_t Type); 
 	uint8_t* GetBegin();
 	uint8_t* GetEnd();
