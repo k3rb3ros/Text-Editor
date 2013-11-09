@@ -31,6 +31,27 @@ bool Buffer::SetMarkLen(uint16_t index, uint16_t len)
 	return true;
 }
 
+int32_t Buffer::LookForward(uint32_t x) //Search forward if there is another line continue until you get to the current x value of the cursor or we reach the end of the text
+{
+        uint32_t i = GetPoint(); //get the count for length calculations 
+
+        while(i <= text_length)
+        {
+                if(buffer[MapToGap(i)]=='\n') //find the start of the next line
+                {
+                        int32_t j = -1;
+                        for(j=0; j<=x; ++j, ++i)//advance to x or the end of the text filled buffer
+                        {
+                                if(i == text_length) break;
+                        }
+                        SetPointA(i); //Set the point to the new cursor position                
+                        return j%CONSOLE_WIDTH; //return the horizontal the new horizontal position of the cursor
+                }
+                i = MapToGap(++i); //advance to the right of the buffer
+        }
+        return -1;
+}
+
 uint32_t Buffer::GetTextLength()
 {
 	return text_length;
@@ -61,29 +82,6 @@ uint16_t Buffer::GoBackALine(uint16_t x)
         uint16_t point = GetPoint();
 	
 	return 0;
-}
-
-int32_t Buffer::GoForwardALine(uint32_t x)
-{
-	uint32_t i = GetPoint(); //set i to the current point in the buffer
-
-	while(i < BUFFSIZE)
-	{
-		if(buffer[i]==0) return -1;
-		if(buffer[i]=='\n') //find the start of the next line
-		{
-			for(uint32_t j=0; j<=x; j++, i=MapToGap(++i))//advance to x or the end of that line
-			{
-				if(buffer[i] == 0)
-				{
-					SetPointA(i); //Set the point to the new cursor position		
-					return j%CONSOLE_WIDTH; //return the horizontal the new horizontal position of the cursor
-				}
-			}
-		}
-		i = MapToGap(++i);
-	}
-	return -1;
 }
 
 uint16_t Buffer::MapToGap(uint16_t index) //Map a character index in the array to its actual position

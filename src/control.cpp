@@ -74,7 +74,7 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		}
 		break;
 		case 258: //Down arrow press
-		EndLine(buffers[current_buffer]);
+		DeclinateCursor(buffers[current_buffer]);
 		break;
 		case 259: //Up arrow press
 		UpLine();
@@ -112,34 +112,34 @@ void Controller::ParseView(int32_t ch, vector<Buffer*> buffers, uint8_t current_
 
 void Controller::Welcome(int32_t &ch)
 {
- curs_set(0); //Turn off the cursor
- //Display Welcome Message
- printw("                       Kedit By K3rb3ros\n");
- printw("                  -so/-                 .-          \n");
- printw("                 os-..:syo++o/+/o+++/oysd++/        \n");
- printw("                -d......./y/-.-...:-//:m+:./y`      \n");
- printw("               `hd......ssmy/:oossdMmhoy/:...+`     \n");
- printw("               oMh..+y-.ohdhs+/..-.-o.+yyyy/.-o     \n");
- printw("               oMs.omo-..-....................:o    \n");
- printw("              /MN/./Nh/:.----..............-+mh+s   \n");
- printw("             sMMm+.-ydMmNMMMMm+:-::.....-sNshdMyd+  \n");
- printw("           `hMNo-..+mMMMo::ohhdmNNNy++hsNNmh+oymod` \n");
- printw("          `mMMh...:ymMMMhshhh--oysohs:++:--oh+yMooo \n");
- printw("          yMMMh/..-hMMMh/-+MMds::/:.......smy..--./o\n");
- printw("          hMMMNo.-smNM+....+mhsyh+.............../od\n");
- printw("          sMMMN+.--+Mm-..............o/:...o...../Ns\n");
- printw("          -MMMd+..yMMNs+-............+hy++o/-...+/-`\n");
- printw("          `MMMm/..:hMy/momo....-/....-dhNNy+.-.odm- \n");
- printw("           yMMdo...:+s-..oys...:mm+.....+s-.+o-NN-  \n");
- printw("           -MMN.-:..dMmy...:....-+yyo++++ho+:.om-   \n");
- printw("            oMMoho..yNMMmh::+-............../mm:    \n");
- printw("             yMMMhhs` :mMMNmNs+/.......-..sdNy`     \n");
- printw("              +NMMMM`   -yNMMMNy/...+:sNy/oN-       \n");
- printw("               `:omNy     `+dNNMm:dNNMMMmy:         \n");
- printw("                    +o        `/msmMNyo:            \n");
- printw("                 Press any key to continue\n");
- refresh();
- while(ch == 0) //Wait for user input
+  curs_set(0); //Turn off the cursor
+  //Display Welcome Message
+  printw("                       Kedit By K3rb3ros\n");
+  printw("                  -so/-                 .-          \n");
+  printw("                 os-..:syo++o/+/o+++/oysd++/        \n");
+  printw("                -d......./y/-.-...:-//:m+:./y`      \n");
+  printw("               `hd......ssmy/:oossdMmhoy/:...+`     \n");
+  printw("               oMh..+y-.ohdhs+/..-.-o.+yyyy/.-o     \n");
+  printw("               oMs.omo-..-....................:o    \n");
+  printw("              /MN/./Nh/:.----..............-+mh+s   \n");
+  printw("             sMMm+.-ydMmNMMMMm+:-::.....-sNshdMyd+  \n");
+  printw("           `hMNo-..+mMMMo::ohhdmNNNy++hsNNmh+oymod` \n");
+  printw("          `mMMh...:ymMMMhshhh--oysohs:++:--oh+yMooo \n");
+  printw("          yMMMh/..-hMMMh/-+MMds::/:.......smy..--./o\n");
+  printw("          hMMMNo.-smNM+....+mhsyh+.............../od\n");
+  printw("          sMMMN+.--+Mm-..............o/:...o...../Ns\n");
+  printw("          -MMMd+..yMMNs+-............+hy++o/-...+/-`\n");
+  printw("          `MMMm/..:hMy/momo....-/....-dhNNy+.-.odm- \n");
+  printw("           yMMdo...:+s-..oys...:mm+.....+s-.+o-NN-  \n");
+  printw("           -MMN.-:..dMmy...:....-+yyo++++ho+:.om-   \n");
+  printw("            oMMoho..yNMMmh::+-............../mm:    \n");
+  printw("             yMMMhhs` :mMMNmNs+/.......-..sdNy`     \n");
+  printw("              +NMMMM`   -yNMMMNy/...+:sNy/oN-       \n");
+  printw("               `:omNy     `+dNNMm:dNNMMMmy:         \n");
+  printw("                    +o        `/msmMNyo:            \n");
+  printw("                 Press any key to continue\n");
+  refresh();
+  while(ch == 0) //Wait for user input
  {
   ch = getch(); 
  }

@@ -70,6 +70,14 @@ void Window::AdvanceCursor()
 	else if(x >= CONSOLE_WIDTH-1 && y < CONSOLE_HEIGHT-1) move(y+1, 0);
 }
 
+void Window::DeclinateCursor(Buffer* buffer) //move the cursor down if we can
+{
+	int32_t x = 0;
+	int32_t y = 0;
+	getyx(stdscr, y, x);
+	if(x = buffer->LookForward(x) >=0 && y < CONSOLE_HEIGHT-1) move(y+1, x); 
+}
+
 void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 {
 	uint8_t window_buffer[(CONSOLE_WIDTH*CONSOLE_HEIGHT)+1];
@@ -97,13 +105,16 @@ void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 	}
 }
 
-void Window::EndLine(Buffer* buffer)
+void Window::EndLine(Buffer* buffer) //move the cursor down to the start of the next line
 {
+        
 	uint32_t y = 0;
 	uint32_t x = 0;
 	getyx(stdscr, y, x);
-	if(x = buffer->GoForwardALine(x) == -1) return; //Advance the cursor
-	if(y < CONSOLE_HEIGHT) move(++y, x);
+	//if(x = buffer->LookForward(x) == -1) return; //Advance the cursor
+	if(y < CONSOLE_HEIGHT) y++;
+           //scroll buffer down
+        move(y, 0);
 }
 
 void Window::NcursesTest()

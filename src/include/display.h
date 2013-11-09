@@ -15,6 +15,7 @@ class Window
 	Window(); //default Constructor
 	friend class World;
 	void AdvanceCursor();
+        void DeclinateCursor(Buffer* buffer);
 	void DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer);
 	void EndLine(Buffer* buffer);
 	void NcursesTest(); //Test ncurses
