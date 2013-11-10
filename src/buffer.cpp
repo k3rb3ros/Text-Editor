@@ -11,6 +11,13 @@ Buffer::Buffer()
 	text_length = 0;
 }
 
+bool Buffer::LookRight()
+{
+	uint32_t index = (point - buffer);
+	if(index < text_length && buffer[MapToGap(index+1)] != '\n') return true; //if we are still in the text and the character to the right isn't the start of a new line continue with the operation
+	return false;
+}
+
 bool Buffer::GetModified()
 {
 	return modified;
@@ -33,14 +40,15 @@ bool Buffer::SetMarkLen(uint16_t index, uint16_t len)
 
 int32_t Buffer::LookBackward(int32_t x)//Return the x coordinate of the previous line if it exists otherwise the x coordinate of the end of the previous line or -1 if there is no previous line
 {
-	uint32_t i = GetPoint();
+	uint32_t i = (point - buffer);
 	while(i >= 0)
 	{
 		if(buffer[MapToGap(i--)] == '\n')//check for previous lines
 		{
 			uint32_t j = 0;
 			while(i>0 && buffer[MapToGap(i--)] != '\n'); //go to the begining of the previous line
-			while(j < x) if(buffer[MapToGap(i+j++)] == '\n') break; //advance j until the line ends or we reach x
+			while(j < x) if(buffer[MapToGap(i+j)] != '\n') j++;
+			else break; //advance j until the line ends or we reach x
 			SetPointA(i+j); //Set the point there
 			return j; //return the x offset to that point
 		}
@@ -50,7 +58,7 @@ int32_t Buffer::LookBackward(int32_t x)//Return the x coordinate of the previous
 
 int32_t Buffer::LookForward(int32_t x) //Search forward if there is another line continue until you get to the current x value of the cursor or we reach the end of the text
 {
-        uint32_t i = GetPoint(); //get the count for length calculations 
+        uint32_t i = (point - buffer); //get the count for length calculations 
 
         while(i <= text_length)
         {
@@ -192,11 +200,7 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 			*(point++) = txt[i]; //insert the text at the point and advance it
 			gap_start ++; //increment gap_start 
 			text_length += str_len; //keep track of how full the buffer is
-			if(txt[i] == '\n') 
-			{
-                        	line_number++;
-                                CreateMark((point-buffer)-1, EOL); 
-                        }
+			if(txt[i] == '\n') line_number++;
 		}
 	}
 	else if(gap_start < point)//The cursor has been moved right so we should shift that many characters right of the gap left of it
@@ -210,11 +214,7 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 			*(point++) = txt[i];
 			gap_start ++; //increment gap_start 
 			text_length += str_len;
-			if(txt[i] == '\n') 
-                        {
-                        	line_number++;
-                                CreateMark((point-buffer)-1, EOL); 
-                        }
+			if(txt[i] == '\n') line_number++;
 		}
 	}
 	else //gap_start > point the cursor has been moved left so we should shift offset characters from left of the gap to right of the gap
@@ -229,11 +229,7 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 			*(point++) = txt[i];
 			gap_start ++; //increment gap_start 
 			text_length += str_len;
-			if(txt[i] == '\n')
-                        {
-                        	line_number++;
-                                CreateMark((point-buffer)-1, EOL); 
-                        }
+			if(txt[i] == '\n') line_number++;
 		}
 	}
 }

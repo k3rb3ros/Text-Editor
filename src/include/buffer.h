@@ -23,6 +23,7 @@ class Buffer
 	public:
 	Buffer();
 	bool GetModified();
+	bool LookRight();
 	bool SearchF(uint8_t* txt);
         bool SetMarkLen(uint16_t index, uint16_t len);
 	int32_t LookBackward(int32_t x);

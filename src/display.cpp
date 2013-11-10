@@ -61,13 +61,15 @@ Window::Window()
 	keypad(stdscr, TRUE);
 }
 
-void Window::AdvanceCursor()
+bool Window::AdvanceCursor(Buffer* buffer, bool check) //Advance the cursor to the right if there is text there
 {
  	uint32_t x = 0;
  	uint32_t y = 0;
  	getyx(stdscr, y, x);
+	if(check && !(buffer -> LookRight())) return false; //if check is on only continue if the cursor is still in the text
  	if(x < CONSOLE_WIDTH-1) move(y, x+1);
 	else if(x >= CONSOLE_WIDTH-1 && y < CONSOLE_HEIGHT-1) move(y+1, 0);
+	return true;
 }
 
 void Window::DeclinateCursor(Buffer* buffer) //move the cursor down if we can

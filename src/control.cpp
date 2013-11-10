@@ -60,7 +60,7 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		break;
 		case ' ' ... '~': //Regular ascii range press
 		buffers[current_buffer]->Insert(&txt, 1);
-		AdvanceCursor();	
+		AdvanceCursor(buffers[current_buffer], false);	
 		break;
 		case 10: //Enter key Press
 		buffers[current_buffer]->Insert(&txt, 1);
@@ -84,8 +84,7 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		RetractCursor();
 		break;
 		case 261: //Right arrow press
-		buffers[current_buffer]->SetPointR(1);
-		AdvanceCursor();	
+		if(AdvanceCursor(buffers[current_buffer], true)) buffers[current_buffer]->SetPointR(1);
 		break;
 		case 330: //Delete key press
 		buffers[current_buffer]->Delete(1);

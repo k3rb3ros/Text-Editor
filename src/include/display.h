@@ -14,7 +14,7 @@ class Window
 	public:
 	Window(); //default Constructor
 	friend class World;
-	void AdvanceCursor();
+	bool AdvanceCursor(Buffer* buffer, bool check);
         void DeclinateCursor(Buffer* buffer);
 	void DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer);
 	void EndLine(Buffer* buffer);
