@@ -1,5 +1,22 @@
 #include "include/buffer.h"
 
+uint16_t Buffer::SearchBuffer(uint8_t* pattern)
+{
+	uint16_t i, j, M = strlen((char*)pattern);
+	
+	for(i=0, j=0; j<M&&i<text_length; i++, j++)
+	{
+		while(buffer[MapToGap(i)]!=pattern[j]) //if character in text does not match character in pattern then advance the pattern one character to the right in the test
+		{
+			if(pattern[j] == '?') break; //unless its a wildcard character
+			i = i-j+1; 
+			j=0;
+		}
+	}
+	if(j==M) return i-M;
+	else return -1;
+}
+
 Buffer::Buffer()
 {
 	modified = false; //set modified to false
@@ -9,6 +26,12 @@ Buffer::Buffer()
 	for(uint32_t i=0; i<BUFFSIZE; i++) buffer[i] = 0; //zero fill the buffer
 	line_number = 1;
 	text_length = 0;
+}
+
+bool Buffer::CheckLeft() //returns true if the character to the left of point is \n
+{
+	if((point-buffer) <= 0 || *point-1 == '\n') return false;
+	return true;
 }
 
 bool Buffer::LookRight()
@@ -23,7 +46,7 @@ bool Buffer::GetModified()
 	return modified;
 }
 
-bool Buffer::SearchF(uint8_t* txt)
+bool Buffer::SearchF(uint8_t* ptrn)
 {
 	return false;
 }
@@ -103,6 +126,15 @@ uint16_t Buffer::GoBackALine(uint16_t x)
         uint16_t point = GetPoint();
 	
 	return 0;
+}
+
+uint16_t Buffer::LookLeft() //Get the x coordinate of the end of the previous line or the same one if it is longer then CONSOLE_WIDTH
+{
+	uint16_t index = (point-buffer);
+	uint16_t prev_line = index-1;
+	while(prev_line > 0 && buffer[MapToGap(prev_line--)] != '\n'); //Go to the begining of the previous line
+	while(prev_line < index && buffer[MapToGap(prev_line+1)] != '\n') prev_line++; //get the length of the previous line
+	return prev_line%CONSOLE_WIDTH; //return the x coordinate of that line
 }
 
 uint16_t Buffer::MapToGap(uint16_t index) //Map a character index in the array to its actual position

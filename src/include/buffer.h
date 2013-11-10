@@ -16,15 +16,18 @@ class Buffer
 	uint8_t* point;
 	uint16_t line_number;
 	uint16_t text_length;
+
+	uint16_t SearchBuffer(uint8_t* pattern);
         
         protected:
 	map<uint16_t, Marker*> markers;
 
 	public:
 	Buffer();
+	bool CheckLeft();
 	bool GetModified();
 	bool LookRight();
-	bool SearchF(uint8_t* txt);
+	bool SearchF(uint8_t* ptrn);
         bool SetMarkLen(uint16_t index, uint16_t len);
 	int32_t LookBackward(int32_t x);
         int32_t LookForward(int32_t x);
@@ -35,6 +38,7 @@ class Buffer
 	uint16_t GetMark(uint16_t index);
 	uint16_t GetPoint();
 	uint16_t GoBackALine(uint16_t x);
+	uint16_t LookLeft();
         uint16_t MapToGap(uint16_t index);
 	uint8_t GetCh(uint16_t index);
 	void CreateMark(uint16_t index, uint8_t type);

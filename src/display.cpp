@@ -140,13 +140,14 @@ void Window::NcursesTest()
 	endwin();
 }
 
-void Window::RetractCursor()
+void Window::RetractCursor(Buffer* buffer, bool check)
 {
-	uint32_t y = 0;
-	uint32_t x = 0;
+	int32_t y = 0;
+	int32_t x = 0;
+
 	getyx(stdscr, y, x);
-	if(x > 0) move(y,--x);
-	else if(y > 0) move(--y, 0);
+	if(x > 0) move(y, x-1);
+	else if(check && y > 0) move(--y, buffer -> LookLeft()); //move the cursor to the end of the previous line
 }
 
 Window::~Window()

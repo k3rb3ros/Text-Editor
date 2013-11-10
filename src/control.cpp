@@ -69,8 +69,8 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		case 263: //Backspace Press
                 if(buffers[current_buffer]->GetPoint() > 0)
 		{
-			buffers[current_buffer]->Delete(-1);
-			RetractCursor();
+			buffers[current_buffer] -> Delete(-1);
+			RetractCursor(buffers[current_buffer], true);
 		}
 		break;
 		case 258: //Down arrow press
@@ -80,14 +80,17 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		InclinateCursor(buffers[current_buffer]);
 		break;
 		case 260: //Left arrow press 
-                buffers[current_buffer]->SetPointR(-1);
-		RetractCursor();
+		if(buffers[current_buffer] -> CheckLeft())
+		{
+			buffers[current_buffer] -> SetPointR(-1);
+			RetractCursor(buffers[current_buffer], false);
+		}
 		break;
 		case 261: //Right arrow press
 		if(AdvanceCursor(buffers[current_buffer], true)) buffers[current_buffer]->SetPointR(1);
 		break;
 		case 330: //Delete key press
-		buffers[current_buffer]->Delete(1);
+		//buffers[current_buffer]->Delete(1);
 		default:;
 	}
 }
@@ -154,7 +157,7 @@ void Controller::SetRunning(bool* Running)
 
 void Controller::Control(vector<Buffer*> buffers, uint8_t current_buffer)
 {
-	if(ch == 268) *running = false; //running = false; //if we get q then stop the program
+	if(ch == 268) *running = false; //if we get q then stop the program
 	switch (mode) //check what mode we are in
 	{
 		case SEARCH: ParseSearch(ch, buffers, current_buffer);
