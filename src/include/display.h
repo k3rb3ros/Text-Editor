@@ -18,9 +18,9 @@ class Window
         void DeclinateCursor(Buffer* buffer);
 	void DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer);
 	void EndLine(Buffer* buffer);
+	void InclinateCursor(Buffer* buffer);
 	void NcursesTest(); //Test ncurses
 	void RetractCursor();
-	void UpLine();
 	void WriteStatus(uint8_t* status, uint32_t mode, int32_t ch, uint32_t line_num, uint32_t column_num);
 	~Window(); //Destructor
 };

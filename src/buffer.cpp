@@ -31,23 +31,36 @@ bool Buffer::SetMarkLen(uint16_t index, uint16_t len)
 	return true;
 }
 
-int32_t Buffer::LookForward(uint32_t x) //Search forward if there is another line continue until you get to the current x value of the cursor or we reach the end of the text
+int32_t Buffer::LookBackward(int32_t x)//Return the x coordinate of the previous line if it exists otherwise the x coordinate of the end of the previous line or -1 if there is no previous line
+{
+	uint32_t i = GetPoint();
+	while(i >= 0)
+	{
+		if(buffer[MapToGap(i--)] == '\n')//check for previous lines
+		{
+			uint32_t j = 0;
+			while(i>0 && buffer[MapToGap(i--)] != '\n'); //go to the begining of the previous line
+			while(j < x) if(buffer[MapToGap(i+j++)] == '\n') break; //advance j until the line ends or we reach x
+			SetPointA(i+j); //Set the point there
+			return j; //return the x offset to that point
+		}
+	}
+	return -1; //There are no previous lines 
+}
+
+int32_t Buffer::LookForward(int32_t x) //Search forward if there is another line continue until you get to the current x value of the cursor or we reach the end of the text
 {
         uint32_t i = GetPoint(); //get the count for length calculations 
 
         while(i <= text_length)
         {
-                if(buffer[MapToGap(i)]=='\n') //find the start of the next line
+                if(buffer[MapToGap(i++)]=='\n') //find the start of the next line //afterwards increment the index
                 {
-                        int32_t j = -1;
-                        for(j=0; j<=x; ++j, ++i)//advance to x or the end of the text filled buffer
-                        {
-                                if(i == text_length) break;
-                        }
-                        SetPointA(i); //Set the point to the new cursor position                
+                        int32_t j = 0;
+                        for(j=0; j<x; ++j) if(i+j == text_length) break; //advance j to x or the end of the line whichever comes first
+                        SetPointA(i+j); //Set the point to the new cursor position                
                         return j%CONSOLE_WIDTH; //return the horizontal the new horizontal position of the cursor
                 }
-                i = MapToGap(++i); //advance to the right of the buffer
         }
         return -1;
 }

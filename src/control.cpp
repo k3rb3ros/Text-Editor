@@ -77,7 +77,7 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		DeclinateCursor(buffers[current_buffer]);
 		break;
 		case 259: //Up arrow press
-		UpLine();
+		InclinateCursor(buffers[current_buffer]);
 		break;
 		case 260: //Left arrow press 
                 buffers[current_buffer]->SetPointR(-1);

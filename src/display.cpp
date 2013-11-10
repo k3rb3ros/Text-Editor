@@ -75,7 +75,8 @@ void Window::DeclinateCursor(Buffer* buffer) //move the cursor down if we can
 	int32_t x = 0;
 	int32_t y = 0;
 	getyx(stdscr, y, x);
-	if(x = buffer->LookForward(x) >=0 && y < CONSOLE_HEIGHT-1) move(y+1, x); 
+	x = buffer->LookForward(x);
+	if(x >=0 && y < CONSOLE_HEIGHT-1) move(y+1, x); 
 }
 
 void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
@@ -111,10 +112,19 @@ void Window::EndLine(Buffer* buffer) //move the cursor down to the start of the 
 	uint32_t y = 0;
 	uint32_t x = 0;
 	getyx(stdscr, y, x);
-	//if(x = buffer->LookForward(x) == -1) return; //Advance the cursor
 	if(y < CONSOLE_HEIGHT) y++;
-           //scroll buffer down
+           //scroll buffer down FIXME
         move(y, 0);
+}
+
+void Window::InclinateCursor(Buffer* buffer)
+{
+	int32_t x = 0;
+	int32_t y = 0;
+	getyx(stdscr, y, x);
+	x = buffer -> LookBackward(x);
+	if(x >= 0 && y > 0) move(y-1, x);
+	//else true; //sroll up or do nothing FIXME 
 }
 
 void Window::NcursesTest()
@@ -135,14 +145,6 @@ void Window::RetractCursor()
 	getyx(stdscr, y, x);
 	if(x > 0) move(y,--x);
 	else if(y > 0) move(--y, 0);
-}
-
-void Window::UpLine()
-{
-	uint32_t y = 0;
-	uint32_t x = 0;
-	getyx(stdscr, y, x);
-	if(y > 0) move(--y, 0);
 }
 
 Window::~Window()

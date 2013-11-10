@@ -25,7 +25,8 @@ class Buffer
 	bool GetModified();
 	bool SearchF(uint8_t* txt);
         bool SetMarkLen(uint16_t index, uint16_t len);
-        int32_t LookForward(uint32_t x);
+	int32_t LookBackward(int32_t x);
+        int32_t LookForward(int32_t x);
 	uint32_t GetTextLength();
 	uint16_t GetGapE();
 	uint16_t GetGapS();
