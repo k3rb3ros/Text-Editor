@@ -22,6 +22,16 @@ void Window::ClearLine(uint8_t* current_line, uint16_t len)
 	for(uint16_t i=0; i<len; i++) current_line[i] = 0;
 }
 
+void Window::WriteSearch(uint8_t* search)
+{
+	uint32_t y = 0;
+	uint32_t x = 0;
+	getyx(stdscr, y, x); //Get the cursor position
+	mvprintw(CONSOLE_HEIGHT, 0, ":%s", search);
+	move(y, x); //restore the cursor position
+	refresh();
+}
+
 void Window::WriteStatus(uint8_t* status, uint32_t mode, int32_t ch, uint32_t line_num, uint32_t column_num) //Print the status line
 {
 	uint8_t Mode[14] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0};

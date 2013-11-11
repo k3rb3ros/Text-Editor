@@ -1,6 +1,6 @@
 #include "include/buffer.h"
 
-uint16_t Buffer::SearchBuffer(uint8_t* pattern)
+int16_t Buffer::SearchBuffer(uint8_t* pattern) //FIXME
 {
 	uint16_t i, j, M = strlen((char*)pattern);
 	
@@ -55,7 +55,6 @@ bool Buffer::SearchF(uint8_t* ptrn)
 		SetMarkLen(search, len);	
 		return true;
 	}
-	
 	return false;
 }
 

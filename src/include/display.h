@@ -21,6 +21,7 @@ class Window
 	void InclinateCursor(Buffer* buffer);
 	void NcursesTest(); //Test ncurses
 	void RetractCursor(Buffer* buffer, bool check);
+	void WriteSearch(uint8_t* search);
 	void WriteStatus(uint8_t* status, uint32_t mode, int32_t ch, uint32_t line_num, uint32_t column_num);
 	~Window(); //Destructor
 };

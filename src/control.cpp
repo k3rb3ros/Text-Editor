@@ -9,20 +9,43 @@ Controller::Controller()
 	ch = 0;
 	display_status = false;
 	mode = WELCOME;
+	for(uint8_t i=0; i<=CONSOLE_WIDTH; i++) search_pattern[i] = 0;
+}
+
+void Controller::ClearBuff()
+{
+	for(uint8_t i=0; i<=CONSOLE_WIDTH; i++) search_pattern[i] = 0;
+}
+
+void Controller::InsertPtrn(uint8_t ch) //Insert the character passed in into search_pattern
+{
+	uint16_t len = strlen((char*)search_pattern);
+	if(len < CONSOLE_WIDTH) search_pattern[len] = ch; 
 }
 
 void Controller::ParseSearch(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer)
 {
+	uint8_t _ch = (uint8_t) ch;
 	switch (ch)
 	{
-		case 18:
-		mode = REPLACE;
-		break;
 		case 9:
 		mode = INSERT;
 		break;
+		case 10: //Enter press
+		if(buffers[current_buffer] -> SearchF(search_pattern) == true)
+		{
+			strncpy((char*)search_pattern, "Pattern found", 13);
+		}
+		else strncpy((char*)search_pattern, "Pattern not found", 17);
+		break;
+		case 18:
+		mode = REPLACE;
+		break;
 		case 27:
 		mode = VIEW;
+		break;
+		case ' ' ... '~':
+		InsertPtrn(_ch);
 		break;
 		default:;
 	}
@@ -34,6 +57,7 @@ void Controller::ParseReplace(int32_t ch, vector<Buffer*> buffers, uint8_t curre
 	{
 		case 6:
 		mode = SEARCH;
+		ClearBuff();
 		break;
 		case 9:
 		mode = INSERT;
@@ -47,11 +71,12 @@ void Controller::ParseReplace(int32_t ch, vector<Buffer*> buffers, uint8_t curre
 
 void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer)
 {
-	uint8_t txt = (uint8_t) ch;
+	uint8_t _ch = (uint8_t) ch;
 	switch (ch)
 	{
 		case 6:
 		mode = SEARCH;
+		ClearBuff();
 		break;
 		case 27:
 		mode = VIEW;
@@ -60,11 +85,11 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		mode = REPLACE;
 		break;
 		case ' ' ... '~': //Regular ascii range press
-		buffers[current_buffer]->Insert(&txt, 1);
+		buffers[current_buffer]->Insert(&_ch, 1);
 		AdvanceCursor(buffers[current_buffer], false);	
 		break;
 		case 10: //Enter key Press
-		buffers[current_buffer]->Insert(&txt, 1);
+		buffers[current_buffer]->Insert(&_ch, 1);
 		EndLine(buffers[current_buffer]);
 		break;
 		case 263: //Backspace Press
@@ -102,6 +127,7 @@ void Controller::ParseView(int32_t ch, vector<Buffer*> buffers, uint8_t current_
 	{
 		case 6:
 		mode = SEARCH;
+		ClearBuff();
 		break;
 		case 9:
 		mode = INSERT;
@@ -115,7 +141,6 @@ void Controller::ParseView(int32_t ch, vector<Buffer*> buffers, uint8_t current_
 
 void Controller::Welcome(int32_t &ch)
 {
-  curs_set(0); //Turn off the cursor
   //Display Welcome Message
   printw("                       Kedit By K3rb3ros\n");
   printw("                  -so/-                 .-          \n");
@@ -147,7 +172,6 @@ void Controller::Welcome(int32_t &ch)
   ch = getch(); 
  }
  clear();//clear the screen
- curs_set(1); //Turn on cursor
  mode = INSERT; //Enter insert mode
 }
 
@@ -161,31 +185,38 @@ void Controller::Control(vector<Buffer*> buffers, uint8_t current_buffer)
 	if(ch == 268) *running = false; //if we get q then stop the program
 	switch (mode) //check what mode we are in
 	{
-		case SEARCH: 
+		case SEARCH:
+		curs_set(0); 
 		display_status = false;
 		ParseSearch(ch, buffers, current_buffer);
 		break;
 
-		case REPLACE: 
+		case REPLACE:
+		curs_set(1); 
 		display_status = true;
 		ParseReplace(ch, buffers, current_buffer);
 		break;
 
-		case INSERT: 
+		case INSERT:
+		curs_set(1); 
 		display_status = true;
 		ParseInsert(ch, buffers, current_buffer);
 		break;
 
-		case VIEW: 
+		case VIEW:
+		curs_set(1); 
 		display_status = true;
 		ParseView(ch, buffers, current_buffer);
 		break;
 
-		case WELCOME: Welcome(ch);
+		case WELCOME:
+		curs_set(0); 
+		Welcome(ch);
 		break;
 		default:;
 	}
 	DrawScreen(buffers, current_buffer); //Draw the Screen
 	if(display_status)WriteStatus(NULL, mode, ch, buffers[current_buffer]->GetLineNumber(), buffers[current_buffer]->GetCurrentLength());
+	else if(mode == SEARCH) WriteSearch(search_pattern);
         ch = getch(); //get the current character
 }

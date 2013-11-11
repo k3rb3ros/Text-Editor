@@ -16,7 +16,7 @@ class Buffer
 	uint8_t* point;
 	uint16_t text_length;
 
-	uint16_t SearchBuffer(uint8_t* pattern);
+	int16_t SearchBuffer(uint8_t* pattern);
         
         protected:
 	map<uint16_t, Marker*> markers;
