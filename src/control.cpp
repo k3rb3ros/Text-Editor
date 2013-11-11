@@ -7,6 +7,7 @@
 Controller::Controller()
 {
 	ch = 0;
+	display_status = false;
 	mode = WELCOME;
 }
 
@@ -160,16 +161,24 @@ void Controller::Control(vector<Buffer*> buffers, uint8_t current_buffer)
 	if(ch == 268) *running = false; //if we get q then stop the program
 	switch (mode) //check what mode we are in
 	{
-		case SEARCH: ParseSearch(ch, buffers, current_buffer);
+		case SEARCH: 
+		display_status = false;
+		ParseSearch(ch, buffers, current_buffer);
 		break;
 
-		case REPLACE: ParseReplace(ch, buffers, current_buffer);
+		case REPLACE: 
+		display_status = true;
+		ParseReplace(ch, buffers, current_buffer);
 		break;
 
-		case INSERT: ParseInsert(ch, buffers, current_buffer);
+		case INSERT: 
+		display_status = true;
+		ParseInsert(ch, buffers, current_buffer);
 		break;
 
-		case VIEW: ParseView(ch, buffers, current_buffer);
+		case VIEW: 
+		display_status = true;
+		ParseView(ch, buffers, current_buffer);
 		break;
 
 		case WELCOME: Welcome(ch);
@@ -177,6 +186,6 @@ void Controller::Control(vector<Buffer*> buffers, uint8_t current_buffer)
 		default:;
 	}
 	DrawScreen(buffers, current_buffer); //Draw the Screen
-	WriteStatus(NULL, mode, ch, buffers[current_buffer]->GetLineNumber(), buffers[current_buffer]->GetTextLength());
+	if(display_status)WriteStatus(NULL, mode, ch, buffers[current_buffer]->GetLineNumber(), buffers[current_buffer]->GetCurrentLength());
         ch = getch(); //get the current character
 }

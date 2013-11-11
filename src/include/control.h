@@ -8,6 +8,7 @@
 class Controller : public Window 
 {
 	private:
+	bool display_status;
 	bool* running;
 	int32_t ch;
 	uint8_t mode;

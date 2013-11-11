@@ -14,7 +14,6 @@ class Buffer
 	uint8_t* gap_end;
 	uint8_t* gap_start;	
 	uint8_t* point;
-	uint16_t line_number;
 	uint16_t text_length;
 
 	uint16_t SearchBuffer(uint8_t* pattern);
@@ -32,6 +31,7 @@ class Buffer
 	int32_t LookBackward(int32_t x);
         int32_t LookForward(int32_t x);
 	uint32_t GetTextLength();
+	uint16_t GetCurrentLength();
 	uint16_t GetGapE();
 	uint16_t GetGapS();
 	uint16_t GetLineNumber();
@@ -45,7 +45,6 @@ class Buffer
 	void DeleteMark(uint16_t index);
 	void Delete(int32_t count);
 	void Insert(uint8_t* txt, int32_t str_len);
-	void SetLineNumber(int16_t line_num);
 	void SetModified(bool status);
 	void SetPointA(uint32_t location);
 	void SetPointR(int32_t count);

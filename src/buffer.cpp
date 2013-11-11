@@ -24,7 +24,6 @@ Buffer::Buffer()
 	gap_end = &buffer[BUFFSIZE-1]; //set gap to point to the first index
 	gap_start = &buffer[0]; //set gap start to the point
 	for(uint32_t i=0; i<BUFFSIZE; i++) buffer[i] = 0; //zero fill the buffer
-	line_number = 1;
 	text_length = 0;
 }
 
@@ -48,6 +47,15 @@ bool Buffer::GetModified()
 
 bool Buffer::SearchF(uint8_t* ptrn)
 {
+	uint16_t len = strlen((char*) ptrn);
+	uint16_t search = SearchBuffer(ptrn);
+	if(search >=0)
+	{
+		CreateMark(search, SEARCH_RESULT);
+		SetMarkLen(search, len);	
+		return true;
+	}
+	
 	return false;
 }
 
@@ -101,6 +109,13 @@ uint32_t Buffer::GetTextLength()
 	return text_length;
 }
 
+uint16_t Buffer::GetCurrentLength()
+{
+	uint16_t length = 0;
+	for(uint16_t i=0; i<(point-buffer); i++) if(buffer[MapToGap(i)]!='\n') length++;
+	return length;
+}
+
 uint16_t Buffer::GetGapE()
 {
 	return (gap_end - buffer);
@@ -113,6 +128,8 @@ uint16_t Buffer::GetGapS()
 
 uint16_t Buffer::GetLineNumber()
 {
+	uint16_t line_number = 1;
+	for(uint16_t i = 0; i<=(point-buffer); i++)if(buffer[MapToGap(i)] == '\n') line_number++;
 	return line_number;
 }
 
@@ -188,7 +205,6 @@ void Buffer::Delete(int32_t count) //Deletes count uint8_t characters to the rig
 			count *= -1; //invert count
 			for(int32_t i=0; i<count; i++) //delete characters to the left of point
 			{
-				if(*point == '\n') line_number--;
 				*(point--) = 0; //delete the uint8_tacters left of the point and move the point to the left
 				gap_start --; //update the start of the gap so that its at the new point
 				text_length --;
@@ -198,7 +214,6 @@ void Buffer::Delete(int32_t count) //Deletes count uint8_t characters to the rig
 		{
 			for(int32_t i=0; i<count; i++) //delete characters to the right of point (after gap)
 			{
-				if(*gap_end == '\n') line_number--;
 				*(gap_end++) = 0; //delete the uint8_tacters right of the point
 				text_length --;
 			}
@@ -232,7 +247,6 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 			*(point++) = txt[i]; //insert the text at the point and advance it
 			gap_start ++; //increment gap_start 
 			text_length += str_len; //keep track of how full the buffer is
-			if(txt[i] == '\n') line_number++;
 		}
 	}
 	else if(gap_start < point)//The cursor has been moved right so we should shift that many characters right of the gap left of it
@@ -246,7 +260,6 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 			*(point++) = txt[i];
 			gap_start ++; //increment gap_start 
 			text_length += str_len;
-			if(txt[i] == '\n') line_number++;
 		}
 	}
 	else //gap_start > point the cursor has been moved left so we should shift offset characters from left of the gap to right of the gap
@@ -261,14 +274,8 @@ void Buffer::Insert(uint8_t* txt, int32_t str_len) //insert a string at point, p
 			*(point++) = txt[i];
 			gap_start ++; //increment gap_start 
 			text_length += str_len;
-			if(txt[i] == '\n') line_number++;
 		}
 	}
-}
-
-void Buffer::SetLineNumber(int16_t line_num)
-{
-	line_number += line_num;
 }
 
 void Buffer::SetModified(bool status)

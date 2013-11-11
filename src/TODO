@@ -1,7 +1,8 @@
 * Impliment search
 DONE Impliment mark system to keep track of newlines
 DONE Impliment mark system for returning current line
-* Impliment check so that cursor can't move right or down if text does not exist for that point
+DONE Impliment check so that cursor can't move right or down if text does not exist for that point
 * Impliment Overstrike mode functionality
 * Impliment file load into buffer
 * Impliment file save from buffer
+* Fix cursor movement when a line is longer then CONSOLE_WIDTH
