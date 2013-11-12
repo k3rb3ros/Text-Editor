@@ -35,7 +35,9 @@ class Buffer
 	uint16_t GetGapE();
 	uint16_t GetGapS();
 	uint16_t GetLineNumber();
-	uint16_t GetMark(uint16_t index);
+	//uint16_t GetMark(uint16_t index);
+	uint16_t GetNewX(uint16_t initial, uint16_t _new);
+	uint16_t GetNewY(uint16_t initial, uint16_t _new);
 	uint16_t GetPoint();
 	uint16_t GoBackALine(uint16_t x);
 	uint16_t LookLeft();

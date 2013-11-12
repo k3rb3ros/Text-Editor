@@ -24,12 +24,16 @@ void Window::ClearLine(uint8_t* current_line, uint16_t len)
 
 void Window::WriteSearch(uint8_t* search)
 {
+	uint8_t* zed = (uint8_t*)calloc(CONSOLE_WIDTH, sizeof(uint8_t));
 	uint32_t y = 0;
 	uint32_t x = 0;
+
 	getyx(stdscr, y, x); //Get the cursor position
-	mvprintw(CONSOLE_HEIGHT, 0, ":%s", search);
+	mvprintw(CONSOLE_HEIGHT, 0, "%s", zed); //zero out anything on that line
+	mvprintw(CONSOLE_HEIGHT, 0, "SEARCH: %s", search); //write the status
 	move(y, x); //restore the cursor position
 	refresh();
+	free(zed); //free the memory we allocated
 }
 
 void Window::WriteStatus(uint8_t* status, uint32_t mode, int32_t ch, uint32_t line_num, uint32_t column_num) //Print the status line
@@ -120,7 +124,6 @@ void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 
 void Window::EndLine(Buffer* buffer) //move the cursor down to the start of the next line
 {
-        
 	uint32_t y = 0;
 	uint32_t x = 0;
 	getyx(stdscr, y, x);
@@ -137,6 +140,14 @@ void Window::InclinateCursor(Buffer* buffer)
 	x = buffer -> LookBackward(x);
 	if(x >= 0 && y > 0) move(y-1, x);
 	//else true; //sroll up or do nothing FIXME 
+}
+
+void Window::MoveToSearch(Buffer* buffer, uint16_t initial, uint16_t _new)
+{
+	uint16_t y = buffer -> GetNewY(initial, _new);
+	uint16_t x = buffer -> GetNewX(initial, _new);
+
+	move(y, x); //move the cursor to position of the point
 }
 
 void Window::NcursesTest()

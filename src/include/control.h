@@ -12,7 +12,8 @@ class Controller : public Window
 	bool* running;
 	int32_t ch;
 	uint8_t mode;
-
+	
+	void DeletePtrn();
 	void InsertPtrn(uint8_t ch);	
 	void ClearBuff();
 	void ParseSearch(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer);

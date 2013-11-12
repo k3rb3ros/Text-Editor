@@ -19,6 +19,7 @@ class Window
 	void DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer);
 	void EndLine(Buffer* buffer);
 	void InclinateCursor(Buffer* buffer);
+	void MoveToSearch(Buffer* buffer, uint16_t initial, uint16_t _new);
 	void NcursesTest(); //Test ncurses
 	void RetractCursor(Buffer* buffer, bool check);
 	void WriteSearch(uint8_t* search);

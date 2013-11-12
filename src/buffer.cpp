@@ -48,9 +48,10 @@ bool Buffer::GetModified()
 bool Buffer::SearchF(uint8_t* ptrn)
 {
 	uint16_t len = strlen((char*) ptrn);
-	uint16_t search = SearchBuffer(ptrn);
-	if(search >=0)
+	int16_t search = SearchBuffer(ptrn);
+	if(search >=0 && search < BUFFSIZE)
 	{
+		SetPointA(search);
 		CreateMark(search, SEARCH_RESULT);
 		SetMarkLen(search, len);	
 		return true;
@@ -130,6 +131,75 @@ uint16_t Buffer::GetLineNumber()
 	uint16_t line_number = 1;
 	for(uint16_t i = 0; i<=(point-buffer); i++)if(buffer[MapToGap(i)] == '\n') line_number++;
 	return line_number;
+}
+
+uint16_t Buffer::GetNewX(uint16_t initial, uint16_t _new)
+{
+	uint16_t x = 0;
+	uint16_t y = 0;
+	
+	getyx(stdscr, y, x); 
+	if(initial < _new)
+	{
+		while(initial < _new)
+		{
+			if(buffer[MapToGap(initial++)] == '\n') x = 0;
+			else x++;
+		}
+	}
+
+	else if(initial > _new)
+	{
+		while(initial-- > _new)
+		{
+			if(buffer[MapToGap(initial)] == '\n') x = 0; //if we encounter eol then the lines tarts over
+			else if(x > 0) x--; //otherwise decriment x
+			else 
+			{
+				uint16_t count = initial;
+				x = 0; //set x = to zero
+				while(count != 0 && buffer[MapToGap(count--)] != '\n') // or set x to the length of the previous line
+				{
+					x++; 
+				}
+			}
+		}
+	}
+	return x%CONSOLE_WIDTH;
+}
+
+uint16_t Buffer::GetNewY(uint16_t initial, uint16_t _new)
+{
+	int16_t x = 0;
+	int16_t y = 0;
+
+	getyx(stdscr, y, x);
+	if(initial <= _new)
+	{
+		while(initial < _new)
+		{
+			if(buffer[MapToGap(initial++)] == '\n') y++;
+			else 
+			{
+				x = (x + 1)%(CONSOLE_WIDTH+1); //increase X
+				if(x == 0) y++; //if we reached the end of the line increment y
+			}
+		}		
+	}
+	
+	else if(initial > _new)
+	{
+		while(initial > _new)
+		{
+			if(buffer[MapToGap(initial--)] == '\n') y--;
+			else if(x == 0)
+			{
+				uint16_t count = 0;
+				y--;
+			}
+		}
+	}
+	return y%(CONSOLE_HEIGHT-1);
 }
 
 uint16_t Buffer::GetPoint() //Returns the location of the point

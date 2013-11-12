@@ -17,6 +17,12 @@ void Controller::ClearBuff()
 	for(uint8_t i=0; i<=CONSOLE_WIDTH; i++) search_pattern[i] = 0;
 }
 
+void Controller::DeletePtrn() //Delete a character from the search pattern
+{
+	uint16_t len = strlen((char*)search_pattern);
+	if(len>0) search_pattern[len-1] = 0;
+}
+
 void Controller::InsertPtrn(uint8_t ch) //Insert the character passed in into search_pattern
 {
 	uint16_t len = strlen((char*)search_pattern);
@@ -26,17 +32,27 @@ void Controller::InsertPtrn(uint8_t ch) //Insert the character passed in into se
 void Controller::ParseSearch(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer)
 {
 	uint8_t _ch = (uint8_t) ch;
+	uint16_t old_point = 0;
+	uint16_t new_point = 0;
 	switch (ch)
 	{
 		case 9:
 		mode = INSERT;
 		break;
 		case 10: //Enter press
+		old_point = buffers[current_buffer] -> GetPoint(); //Get the old point location
 		if(buffers[current_buffer] -> SearchF(search_pattern) == true)
 		{
+			new_point = buffers[current_buffer] -> GetPoint();
 			strncpy((char*)search_pattern, "Pattern found", 13);
+			MoveToSearch(buffers[current_buffer], old_point, new_point);
 		}
 		else strncpy((char*)search_pattern, "Pattern not found", 17);
+		WriteSearch(search_pattern);
+		refresh();
+		ch = 0;
+		while((ch = getch()) == 0); //spin the wheels until the user presses a key
+		ClearBuff(); //clear the buffer
 		break;
 		case 18:
 		mode = REPLACE;
@@ -44,8 +60,11 @@ void Controller::ParseSearch(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		case 27:
 		mode = VIEW;
 		break;
-		case ' ' ... '~':
+		case ' ' ... '~': //regualr ascii character range
 		InsertPtrn(_ch);
+		break;
+		case 263: //Backspace Press
+		DeletePtrn();
 		break;
 		default:;
 	}
@@ -76,7 +95,6 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 	{
 		case 6:
 		mode = SEARCH;
-		ClearBuff();
 		break;
 		case 27:
 		mode = VIEW;
@@ -127,7 +145,6 @@ void Controller::ParseView(int32_t ch, vector<Buffer*> buffers, uint8_t current_
 	{
 		case 6:
 		mode = SEARCH;
-		ClearBuff();
 		break;
 		case 9:
 		mode = INSERT;
@@ -168,9 +185,9 @@ void Controller::Welcome(int32_t &ch)
   printw("                 Press any key to continue\n");
   refresh();
   while(ch == 0) //Wait for user input
- {
-  ch = getch(); 
- }
+  {
+    ch = getch(); 
+  }
  clear();//clear the screen
  mode = INSERT; //Enter insert mode
 }
