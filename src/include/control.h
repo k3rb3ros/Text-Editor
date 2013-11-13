@@ -20,6 +20,7 @@ class Controller : public Window
 	void ParseReplace(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer);
 	void ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer);
 	void ParseView(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer);
+	void Save(uint8_t* action);
 	void Welcome(int32_t &ch);
 	
 	protected:
@@ -30,7 +31,7 @@ class Controller : public Window
 
 	Controller();
 	void SetRunning(bool* Running);
-	void Control(vector<Buffer*> buffers, uint8_t current_buffer);
+	void Control(vector<Buffer*> buffers, uint8_t current_buffer, uint8_t* action);
 };
 
 #endif 

@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 	else if(argc == 2) world = new World((uint8_t*)argv[1]); //create world with file name
 	while(world -> IsRunning())
 	{
-		world ->Control();
+		world -> Control();
 	}
 	delete world;
 	return 0;

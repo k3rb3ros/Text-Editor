@@ -7,6 +7,7 @@
 
 World::World()
 {
+	action = NONE;
 	Buffer* temp = new Buffer;
 	buffers.push_back(temp); 
 	current_buffer = 0;
@@ -17,6 +18,7 @@ World::World()
 
 World::World(uint8_t* FileName)
 {
+	action = NONE;
 	Buffer* temp = new Buffer;
 	buffers.push_back(temp);
 	current_buffer = 0; 
@@ -54,7 +56,8 @@ void World::AddBuffer()
 
 void World::Control()
 {
-	control.Control(buffers, current_buffer);
+	if(action == SAVE_ME)// DO SAVE
+	control.Control(buffers, current_buffer, &action);
 }
 
 void World::DeleteBuffer(uint8_t buffer)

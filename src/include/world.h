@@ -14,8 +14,12 @@ class World
 	uint8_t current_buffer;
         uint8_t* file_name;
 	vector<Buffer*> buffers;
+
+	protected:
+	uint8_t action;	
         
 	public:
+	friend class Controller;
         World();
 	World(uint8_t* FileName);
 	bool IsRunning();
