@@ -2,6 +2,7 @@
 #define INCLUDES_H
 
 #include <iostream>
+#include <fstream>
 #include <map>
 #include <ncurses.h>
 #include <stdint.h>
@@ -19,6 +20,6 @@ using namespace std;
 #define SELECTION 0x2
 #define SEARCH_RESULT 0x4
 
-enum modes {SEARCH, REPLACE, INSERT, VIEW, WELCOME};
+enum modes {INSERT, REPLACE, SAVE, SEARCH, VIEW, WELCOME};
 
 #endif
