@@ -27,13 +27,19 @@ Buffer::Buffer()
 	text_length = 0;
 }
 
-bool Buffer::CheckLeft() //returns true if the character to the left of point is \n
+bool Buffer::CheckLeft() //Returns true if the character to the left of point is \n
 {
 	if((point-buffer) == 0 || *(point-1) == '\n') return false;
 	return true;
 }
 
-bool Buffer::LookRight()
+bool Buffer::CheckRight() //Return true if the character to the right of the point is \n
+{
+	if(*(point+1) == '\n') return true;
+	return false;
+}
+
+bool Buffer::BoundRight()
 {
 	uint32_t index = (point - buffer);
 	if(index < text_length && buffer[MapToGap(index+1)] != '\n') return true; //if we are still in the text and the character to the right isn't the start of a new line continue with the operation
@@ -250,6 +256,11 @@ uint16_t Buffer::LookLeft() //Get the x coordinate of the end of the previous li
 		count++;
 	}
 	return count%CONSOLE_WIDTH; //return the x coordinate of that line
+}
+
+uint16_t Buffer::EndOfBuff() //Returns the number of characters to the end of the buffer
+{
+	return text_length - (point-buffer);
 }
 
 uint16_t Buffer::EndOfLine()//Get the number of characters after the point and before the next new line or end of text (whichever comes first)

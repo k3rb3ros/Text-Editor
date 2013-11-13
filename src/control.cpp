@@ -148,6 +148,12 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		for(int16_t i=offset; i!=0; i++) RetractCursor(buffers[current_buffer], true); //move the cursor
 		break;
 		case 549: //Ctrl+Pg-Down
+		offset = buffers[current_buffer] -> EndOfBuff(); //Get the distance to the end of the buffer
+		for(uint16_t i=0; i<offset; i++) 
+		{
+			AdvanceCursor(buffers[current_buffer], false); //Order matters!
+			buffers[current_buffer] -> SetPointR(1); //move the point there
+		}
 		break;
 		case 554: //Ctrl+Pg-Up go to the begining of the file
 		buffers[current_buffer] -> SetPointA(0);

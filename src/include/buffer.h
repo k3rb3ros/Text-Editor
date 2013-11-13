@@ -24,8 +24,9 @@ class Buffer
 	public:
 	Buffer();
 	bool CheckLeft();
+	bool CheckRight();
 	bool GetModified();
-	bool LookRight();
+	bool BoundRight();
 	bool SearchF(uint8_t* ptrn);
         bool SetMarkLen(uint16_t index, uint16_t len);
 	int32_t LookBackward(int32_t x);
@@ -42,6 +43,7 @@ class Buffer
 	uint16_t GetPoint();
 	uint16_t GoBackALine(uint16_t x);
 	uint16_t LookLeft();
+	uint16_t EndOfBuff();
 	uint16_t EndOfLine();
         uint16_t MapToGap(uint16_t index);
 	uint8_t GetCh(uint16_t index);
