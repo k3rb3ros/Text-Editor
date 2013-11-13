@@ -140,7 +140,7 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		case 338: //Pg-Down //Go to end of current line
 		offset = buffers[current_buffer] -> EndOfLine();
 		buffers[current_buffer] -> SetPointR(offset);
-		//for(uint16_t i=0; i<offset; i++) AdvanceCursor(buffers[current_buffer], true); //move the cursor t othe end of the line
+		for(uint16_t i=0; i<offset; i++) AdvanceCursor(buffers[current_buffer], false); //move the cursor t othe end of the line
 		break;
 		case 339: //Pg-Up
 		break;
