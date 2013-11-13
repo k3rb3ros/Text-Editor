@@ -91,7 +91,7 @@ void Controller::ParseReplace(int32_t ch, vector<Buffer*> buffers, uint8_t curre
 void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer)
 {
 	uint8_t _ch = (uint8_t) ch;
-	uint16_t offset = 0;
+	int16_t offset = 0;
 	switch (ch)
 	{
 		case 6:
@@ -109,7 +109,7 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		break;
 		case 10: //Enter key Press
 		buffers[current_buffer]->Insert(&_ch, 1);
-		EndLine(buffers[current_buffer]);
+		EndLine();
 		break;
 		case 263: //Backspace Press
                 if(buffers[current_buffer]->GetPoint() > 0)
@@ -135,7 +135,7 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		if(AdvanceCursor(buffers[current_buffer], true)) buffers[current_buffer]->SetPointR(1);
 		break;
 		case 330: //Delete key press
-		//buffers[current_buffer]->Delete(1);
+		if(buffers[current_buffer] -> GetPoint() <= buffers[current_buffer] -> GetTextLength()) buffers[current_buffer]->Delete(1); //if there is text to the right of the cursor then delete one line
 		break;
 		case 338: //Pg-Down //Go to end of current line
 		offset = buffers[current_buffer] -> EndOfLine();
@@ -143,6 +143,9 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		for(uint16_t i=0; i<offset; i++) AdvanceCursor(buffers[current_buffer], false); //move the cursor t othe end of the line
 		break;
 		case 339: //Pg-Up
+		offset = buffers[current_buffer] -> BeginOfLine(); //Get the distance to the start of the line
+		buffers[current_buffer] -> SetPointR(offset); //move the point there
+		for(int16_t i=offset; i!=0; i++) RetractCursor(buffers[current_buffer], true); //move the cursor
 		break;
 		case 549: //Ctrl+Pg-Down
 		break;
@@ -248,7 +251,13 @@ void Controller::Control(vector<Buffer*> buffers, uint8_t current_buffer)
 		default:;
 	}
 	DrawScreen(buffers, current_buffer); //Draw the Screen
-	if(display_status)WriteStatus(NULL, mode, ch, buffers[current_buffer]->GetLineNumber(), buffers[current_buffer]->GetCurrentLength());
+	if(display_status)
+	{
+		uint16_t y = 0;
+		uint16_t x = 0;
+		getyx(stdscr, y, x);
+		WriteStatus(NULL, mode, ch, buffers[current_buffer]->GetLineNumber(), x+1);
+	}
 	else if(mode == SEARCH) WriteSearch(search_pattern);
         ch = getch(); //get the current character
 }

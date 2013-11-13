@@ -39,7 +39,6 @@ void Window::WriteSearch(uint8_t* search)
 void Window::WriteStatus(uint8_t* status, uint32_t mode, int32_t ch, uint32_t line_num, uint32_t column_num) //Print the status line
 {
 	uint8_t Mode[14] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-	uint32_t len = 0;
 	uint32_t y = 0;
 	uint32_t x = 0;
 
@@ -58,10 +57,9 @@ void Window::WriteStatus(uint8_t* status, uint32_t mode, int32_t ch, uint32_t li
 		getyx(stdscr, y, x); //Save the current location of the cursor
 		if(status != NULL)
 		{
-			len = strlen((char*)status); 
-			mvprintw(CONSOLE_HEIGHT, 0, "%s %s, char(%d) %u:%u",status, Mode, ch, line_num, column_num);
+			mvprintw(CONSOLE_HEIGHT, 0, "%s %s, char(%d) COL:%u LINE:%u",status, Mode, ch, line_num, column_num);
 		}	
-		else mvprintw(CONSOLE_HEIGHT, 0, "%s char(%d) %u:%u", Mode, ch, line_num, column_num);
+		else mvprintw(CONSOLE_HEIGHT, 0, "%s char(%d) COL:%u LINE:%u", Mode, ch, line_num, column_num);
 		move(y, x); //Restor the cursors original location
 		refresh();
 	}
@@ -122,7 +120,7 @@ void Window::DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer)
 	}
 }
 
-void Window::EndLine(Buffer* buffer) //move the cursor down to the start of the next line
+void Window::EndLine() //move the cursor down to the start of the next line
 {
 	uint32_t y = 0;
 	uint32_t x = 0;

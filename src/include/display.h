@@ -17,7 +17,7 @@ class Window
 	bool AdvanceCursor(Buffer* buffer, bool check);
         void DeclinateCursor(Buffer* buffer);
 	void DrawScreen(vector<Buffer*> &buffers, uint8_t &current_buffer);
-	void EndLine(Buffer* buffer);
+	void EndLine();
 	void InclinateCursor(Buffer* buffer);
 	void MoveToSearch(Buffer* buffer, uint16_t initial, uint16_t _new);
 	void NcursesTest(); //Test ncurses

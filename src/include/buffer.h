@@ -30,7 +30,8 @@ class Buffer
         bool SetMarkLen(uint16_t index, uint16_t len);
 	int32_t LookBackward(int32_t x);
         int32_t LookForward(int32_t x);
-	uint32_t GetTextLength();
+	uint16_t BeginOfLine();
+	uint16_t GetTextLength();
 	uint16_t GetCurrentLength();
 	uint16_t GetGapE();
 	uint16_t GetGapS();
@@ -49,8 +50,8 @@ class Buffer
 	void Delete(int32_t count);
 	void Insert(uint8_t* txt, int32_t str_len);
 	void SetModified(bool status);
-	void SetPointA(uint32_t location);
-	void SetPointR(int32_t count);
+	void SetPointA(uint16_t location);
+	void SetPointR(int16_t count);
 	~Buffer();
 };
 

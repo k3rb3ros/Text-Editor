@@ -71,12 +71,12 @@ bool Buffer::SetMarkLen(uint16_t index, uint16_t len)
 
 int32_t Buffer::LookBackward(int32_t x)//Return the x coordinate of the previous line if it exists otherwise the x coordinate of the end of the previous line or -1 if there is no previous line
 {
-	uint32_t i = (point - buffer);
+	int32_t i = (point - buffer);
 	while(i >= 0)
 	{
 		if(buffer[MapToGap(i--)] == '\n')//check for previous lines
 		{
-			uint32_t j = 0;
+			int32_t j = 0;
 			while(i>0 && buffer[MapToGap(i--)] != '\n'); //go to the begining of the previous line
 			while(j < x) if(buffer[MapToGap(i+j)] != '\n') j++;
 			else break; //advance j until the line ends or we reach x
@@ -104,7 +104,17 @@ int32_t Buffer::LookForward(int32_t x) //Search forward if there is another line
         return -1;
 }
 
-uint32_t Buffer::GetTextLength()
+uint16_t Buffer::BeginOfLine() //return the number of characters before the begining of line buffer[0] or previous \n
+{
+	uint16_t index = point - buffer;
+	int16_t length = 0;
+	if(index == 0 || buffer[MapToGap(index-1)] == '\n') return 0; //Check if we already there
+	while(index > 0 && buffer[MapToGap(--index)] != '\n')length--; //If not go to the begining of the line counting how far we go along the way
+	return length; //return it
+	
+}
+
+uint16_t Buffer::GetTextLength()
 {
 	return text_length;
 }
@@ -136,7 +146,7 @@ uint16_t Buffer::GetLineNumber()
 uint16_t Buffer::GetNewX(uint16_t initial, uint16_t _new)
 {
 	uint16_t x = 0;
-	uint16_t y = 0;
+	uint16_t y = 0; //declared only so we can call getyx()
 	
 	getyx(stdscr, y, x); 
 	if(initial < _new)
@@ -379,7 +389,7 @@ void Buffer::SetModified(bool status)
  	modified = status;
 }
 
-void Buffer::SetPointA(uint32_t location) //set the point to location
+void Buffer::SetPointA(uint16_t location) //set the point to location
 {
 	if(location < BUFFSIZE)
 	{
@@ -388,9 +398,9 @@ void Buffer::SetPointA(uint32_t location) //set the point to location
 	else cerr << "Unable to set point; Location is outside of buffer range \n";
 }
 
-void Buffer::SetPointR(int32_t count) //Moves the point count characters relative to the current location
+void Buffer::SetPointR(int16_t count) //Moves the point count characters relative to the current location
 {
-	if((point + count) > buffer && (point + count) < (buffer + BUFFSIZE))
+	if((point + count) >= buffer && (point + count) < (buffer + BUFFSIZE))
 	{
 		point = (point+count); //set the point
 	}
