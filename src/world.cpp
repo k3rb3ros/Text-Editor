@@ -56,7 +56,7 @@ void World::AddBuffer()
 
 void World::Control()
 {
-	if(action == SAVE_ME)// DO SAVE
+	if(action == SAVE_ME);// DO SAVE
 	control.Control(buffers, current_buffer, &action);
 }
 

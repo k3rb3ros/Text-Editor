@@ -75,6 +75,7 @@ void Controller::ParseSearch(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 
 void Controller::ParseReplace(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer)
 {
+	uint8_t _ch = (uint8_t) ch;
 	switch (ch)
 	{
 		case 6:
@@ -86,6 +87,18 @@ void Controller::ParseReplace(int32_t ch, vector<Buffer*> buffers, uint8_t curre
 		break;
 		case 27:
 		mode = VIEW;
+		break;
+		case ' ' ... '~': //regualr ascii character range
+		if(buffers[current_buffer] -> GetPoint() > 0 && buffers[current_buffer] -> GetPoint() <= buffers[current_buffer] -> GetTextLength()) //Inert into the current character
+		{
+			buffers[current_buffer] -> SetPointR(-1); //Go Back a character
+			buffers[current_buffer] -> Delete(1); //Delete the "current character"
+			buffers[current_buffer] -> SetPointR(1); //advance the cursor
+			buffers[current_buffer] -> Insert(&_ch, 1); //insert the new character 
+			//buffers[current_buffer] -> SetPointR(1); //advance the cursor
+
+			AdvanceCursor(buffers[current_buffer], false);	
+		}
 		break;
 		case 266: //F2 (Save)
 		mode = SAVE;
