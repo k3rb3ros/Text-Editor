@@ -167,7 +167,8 @@ void Window::RetractCursor(Buffer* buffer, bool check)
 	int32_t x = 0;
 
 	getyx(stdscr, y, x);
-	if(x > 0) move(y, x-1);
+	if(x > 0) move(y, --x);
+	//case of x = 0, not necessarily EOL
 	else if(check && y > 0) move(--y, buffer -> LookLeft()); //move the cursor to the end of the previous line
 }
 

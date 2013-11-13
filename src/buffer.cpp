@@ -29,7 +29,7 @@ Buffer::Buffer()
 
 bool Buffer::CheckLeft() //returns true if the character to the left of point is \n
 {
-	if((point-buffer) <= 0 || *point-1 == '\n') return false;
+	if((point-buffer) == 0 || *(point-1) == '\n') return false;
 	return true;
 }
 
@@ -148,21 +148,21 @@ uint16_t Buffer::GetNewX(uint16_t initial, uint16_t _new)
 		}
 	}
 
-	else if(initial > _new)
+	else if(initial > _new) //FIXME
 	{
-		while(initial-- > _new)
+		while(initial > _new)
 		{
 			if(buffer[MapToGap(initial)] == '\n') x = 0; //if we encounter eol then the lines tarts over
 			else if(x > 0) x--; //otherwise decriment x
-			else 
+			else if(x == 0) 
 			{
 				uint16_t count = initial;
-				x = 0; //set x = to zero
 				while(count != 0 && buffer[MapToGap(count--)] != '\n') // or set x to the length of the previous line
 				{
 					x++; 
 				}
 			}
+			initial--;
 		}
 	}
 	return x%CONSOLE_WIDTH;
@@ -178,8 +178,12 @@ uint16_t Buffer::GetNewY(uint16_t initial, uint16_t _new)
 	{
 		while(initial < _new)
 		{
-			if(buffer[MapToGap(initial++)] == '\n') y++;
-			else 
+			if(buffer[MapToGap(initial++)] == '\n') 
+			{
+				x=0;
+				y++;
+			}
+			else
 			{
 				x = (x + 1)%(CONSOLE_WIDTH+1); //increase X
 				if(x == 0) y++; //if we reached the end of the line increment y
@@ -187,16 +191,26 @@ uint16_t Buffer::GetNewY(uint16_t initial, uint16_t _new)
 		}		
 	}
 	
-	else if(initial > _new)
+	else if(initial > _new) //FIXME
 	{
 		while(initial > _new)
 		{
-			if(buffer[MapToGap(initial--)] == '\n') y--;
-			else if(x == 0)
+			if(buffer[MapToGap(initial)] == '\n') 
 			{
-				uint16_t count = 0;
+				x=0;
 				y--;
 			}
+			else if(x > 0) x--;
+			else if(x == 0)
+			{
+				uint16_t count = initial;
+				while(count != 0 && buffer[MapToGap(count--)] != '\n') // or set x to the length of the previous line
+				{
+					x++;
+				}
+				y--;
+			}
+			initial--;
 		}
 	}
 	return y%(CONSOLE_HEIGHT-1);
@@ -216,11 +230,24 @@ uint16_t Buffer::GoBackALine(uint16_t x)
 
 uint16_t Buffer::LookLeft() //Get the x coordinate of the end of the previous line or the same one if it is longer then CONSOLE_WIDTH
 {
+	uint16_t count = 0; //used to count the length of line and mod it (in case its longer then CONSOLE_WIDTH
 	uint16_t index = (point-buffer);
-	uint16_t prev_line = index-1;
-	while(prev_line > 0 && buffer[MapToGap(prev_line--)] != '\n'); //Go to the begining of the previous line
-	while(prev_line < index && buffer[MapToGap(prev_line+1)] != '\n') prev_line++; //get the length of the previous line
-	return prev_line%CONSOLE_WIDTH; //return the x coordinate of that line
+	uint16_t prev_line = index;
+	if(buffer[MapToGap(prev_line-1)] == '\n') return 0; //case of \n\n x always = 0
+	while(prev_line > 0 && buffer[MapToGap(prev_line-1)] != '\n') prev_line--; //Go to the begining of the previous line
+	while(prev_line < index && buffer[MapToGap(++prev_line)] != '\n')//count the number of characters in that line and set that to x mod CONSOLE_WIDTH
+	{	
+		count++;
+	}
+	return count%CONSOLE_WIDTH; //return the x coordinate of that line
+}
+
+uint16_t Buffer::EndOfLine()//Get the number of characters after the point and before the next new line or end of text (whichever comes first)
+{
+	uint16_t index = (point - buffer);
+	uint16_t length = 0;
+	while(index < text_length && buffer[index++] != '\n') length++;
+	return length;
 }
 
 uint16_t Buffer::MapToGap(uint16_t index) //Map a character index in the array to its actual position

@@ -91,6 +91,7 @@ void Controller::ParseReplace(int32_t ch, vector<Buffer*> buffers, uint8_t curre
 void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t current_buffer)
 {
 	uint8_t _ch = (uint8_t) ch;
+	uint16_t offset = 0;
 	switch (ch)
 	{
 		case 6:
@@ -135,6 +136,20 @@ void Controller::ParseInsert(int32_t ch, vector<Buffer*> buffers, uint8_t curren
 		break;
 		case 330: //Delete key press
 		//buffers[current_buffer]->Delete(1);
+		break;
+		case 338: //Pg-Down //Go to end of current line
+		offset = buffers[current_buffer] -> EndOfLine();
+		buffers[current_buffer] -> SetPointR(offset);
+		//for(uint16_t i=0; i<offset; i++) AdvanceCursor(buffers[current_buffer], true); //move the cursor t othe end of the line
+		break;
+		case 339: //Pg-Up
+		break;
+		case 549: //Ctrl+Pg-Down
+		break;
+		case 554: //Ctrl+Pg-Up go to the begining of the file
+		buffers[current_buffer] -> SetPointA(0);
+		move(0, 0);
+		break;
 		default:;
 	}
 }

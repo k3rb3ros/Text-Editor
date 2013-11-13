@@ -41,6 +41,7 @@ class Buffer
 	uint16_t GetPoint();
 	uint16_t GoBackALine(uint16_t x);
 	uint16_t LookLeft();
+	uint16_t EndOfLine();
         uint16_t MapToGap(uint16_t index);
 	uint8_t GetCh(uint16_t index);
 	void CreateMark(uint16_t index, uint8_t type);
